@@ -1,10 +1,7 @@
-# 🇰🇷 Seoulful (서울풀) - Client
+# 🇰🇷 Seoulful - Client
 
 > **"이번 주말, 서울의 낭만을 찾아서"**  
 > 서울시 공공데이터 기반 실시간 축제/전시 큐레이션 지도 서비스
-
-![Seoulful Preview](https://via.placeholder.com/1200x630.png?text=Seoulful+Service+Preview)
-*(스크린샷 이미지는 추후 교체 예정)*
 
 ## 📖 Project Overview
 
@@ -42,7 +39,7 @@
 
 ### 1. Prerequisites
 
-- Node.js 18+
+- Node.js 24+
 - pnpm (권장) or npm/yarn
 - Kakao Developers API Key
 - Supabase Project
@@ -55,7 +52,7 @@ git clone https://github.com/hjpark625/seoulful-client.git
 cd seoulful-client
 
 # Install Dependencies
-pnpm install
+pnpm install --frozen-lockfile
 ```
 
 ### 3. Environment Setup
@@ -105,20 +102,6 @@ pnpm dev
 
 ---
 
-## 🤝 Contribution
-
-1. 이 저장소를 **Fork** 합니다.
-2. 새로운 Branch를 생성합니다 (`git checkout -b feature/AmazingFeature`).
-3. 변경 사항을 **Commit** 합니다 (`git commit -m 'Add some AmazingFeature'`).
-4. Branch에 **Push** 합니다 (`git push origin feature/AmazingFeature`).
-5. **Pull Request**를 생성합니다.
-
----
-
 ## 📝 License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-
----
-
-**Made with ❤️ in Seoul**
