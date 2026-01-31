@@ -1,8 +1,22 @@
+'use client'
+
 import Link from 'next/link'
-import { MapPin, Calendar } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { MapPin, Calendar, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 export default function Home() {
+  const router = useRouter()
+  const [keyword, setKeyword] = useState('')
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!keyword.trim()) return
+    router.push(`/events?search=${encodeURIComponent(keyword)}`)
+  }
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 px-6 py-12 text-center sm:py-24">
       {/* Hero Section */}
@@ -21,24 +35,46 @@ export default function Home() {
           </p>
         </div>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-col gap-4 pt-4 sm:flex-row sm:justify-center">
-          <Link href="/map">
-            <Button size="lg" className="h-14 w-full gap-2 rounded-full px-8 text-lg font-bold shadow-xl sm:w-auto">
-              <MapPin className="h-5 w-5" />
-              지도 바로 보기
+        {/* Search & CTA Buttons */}
+        <div className="flex flex-col items-center gap-6">
+          <form
+            onSubmit={handleSearch}
+            className="flex w-full max-w-md items-center gap-2 rounded-full bg-white p-2 shadow-lg ring-1 ring-slate-200 transition-all focus-within:ring-2 focus-within:ring-blue-500 hover:shadow-xl"
+          >
+            <Input
+              type="text"
+              placeholder="관심 있는 지역이나 축제를 검색해보세요"
+              className="h-12 border-0 bg-transparent px-4 text-base placeholder:text-slate-400 focus-visible:ring-0"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+            />
+            <Button size="icon" type="submit" className="h-10 w-10 shrink-0 rounded-full bg-blue-600 hover:bg-blue-700">
+              <Search className="h-5 w-5 text-white" />
             </Button>
-          </Link>
-          <Link href="/about">
-            <Button
-              variant="outline"
-              size="lg"
-              className="h-14 w-full gap-2 rounded-full px-8 text-lg font-medium sm:w-auto"
-            >
-              <Calendar className="h-5 w-5" />
-              서비스 소개
-            </Button>
-          </Link>
+          </form>
+
+          <div className="flex flex-col gap-4 pt-2 sm:flex-row sm:justify-center">
+            <Link href="/map">
+              <Button
+                size="lg"
+                variant="secondary"
+                className="h-12 w-full gap-2 rounded-full px-8 font-bold text-slate-700 sm:w-auto"
+              >
+                <MapPin className="h-5 w-5" />
+                지도 바로 보기
+              </Button>
+            </Link>
+            <Link href="/about">
+              <Button
+                variant="ghost"
+                size="lg"
+                className="h-12 w-full gap-2 rounded-full px-8 font-medium text-slate-600 sm:w-auto"
+              >
+                <Calendar className="h-5 w-5" />
+                서비스 소개
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
 
