@@ -8,7 +8,7 @@ const config = {
   tabWidth: 2,
   useTabs: false,
   bracketSpacing: true,
-  arrowParens: 'avoid',
+  arrowParens: 'always',
   endOfLine: 'auto',
   plugins: ['prettier-plugin-tailwindcss'],
 }

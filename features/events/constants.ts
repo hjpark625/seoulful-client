@@ -1,5 +1,7 @@
 // @/features/events/constants.ts
 
+import type { EventCategory } from '@/features/events/types/event'
+
 export const EVENT_STYLES = {
   FESTIVAL: {
     label: '축제',
@@ -33,3 +35,16 @@ export const EVENT_STYLES = {
 
 // 기본값 (매칭되는 게 없을 때)
 export const DEFAULT_EVENT_STYLE = EVENT_STYLES.OTHER
+
+export const getCategoryStyle = (category?: EventCategory) => {
+  if (!category) return DEFAULT_EVENT_STYLE
+  return EVENT_STYLES[category] || DEFAULT_EVENT_STYLE
+}
+
+// DB Category Seq -> Frontend Category Mapping
+export const mapCategorySeqToCategory = (seq: number): EventCategory => {
+  if ([9, 10, 11, 12, 13].includes(seq)) return 'FESTIVAL'
+  if (seq === 8) return 'EXHIBITION'
+  if ([2, 3, 4, 5, 6, 14, 15].includes(seq)) return 'PERFORMANCE'
+  return 'OTHER'
+}
