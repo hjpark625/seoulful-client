@@ -12,7 +12,7 @@
     "lint": "eslint",
     "prepare": "husky",
     "lint-staged": "lint-staged",
-    "docker:build": "docker build -t meteoearth/seoulful-client:$(git describe --tags --always --dirty) -t meteoearth/seoulful-client:latest .",
+    "docker:build": "docker build --platform linux/amd64 -t meteoearth/seoulful-client:$(git describe --tags --always --dirty) -t meteoearth/seoulful-client:latest .",
     "docker:push": "docker push meteoearth/seoulful-client:$(git describe --tags --always --dirty) && docker push meteoearth/seoulful-client:latest"
   },
   "lint-staged": {
