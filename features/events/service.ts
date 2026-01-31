@@ -1,33 +1,55 @@
-// @/features/events/service.ts
-import { supabase } from '@/lib/supabase/client'
-import { getWeekendRange } from '@/lib/utils/date'
 import type { SeoulEvent, EventFilter } from '@/features/events/types/event'
 
+const getBaseUrl = () => {
+  if (typeof window !== 'undefined') return ''
+  if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL
+  return 'http://localhost:3000'
+}
+
 export const getEvents = async (filter?: EventFilter): Promise<SeoulEvent[]> => {
-  let query = supabase.from('events').select('*').eq('is_published', true)
+  const params = new URLSearchParams()
+  const baseUrl = getBaseUrl()
 
-  if (filter?.category) {
-    query = query.eq('category', filter.category)
+  if (filter?.category && filter.category.length > 0) {
+    params.append('category', filter.category.join(','))
+  }
+  if (filter?.search) params.append('search', filter.search)
+  if (filter?.startDate) params.append('startDate', filter.startDate)
+  if (filter?.endDate) params.append('endDate', filter.endDate)
+  if (filter?.geohashes && filter.geohashes.length > 0) {
+    params.append('geohashes', filter.geohashes.join(','))
   }
 
-  // 이번 주말 필터 로직 (금요일~일요일)
-  if (filter?.isWeekendOnly) {
-    const { start, end } = getWeekendRange()
+  const res = await fetch(`${baseUrl}/api/events?${params.toString()}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    cache: 'no-store', // or 'force-cache' based on requirements
+  })
 
-    // 로직: (행사 시작일 <= 주말 끝) AND (행사 종료일 >= 주말 시작)
-    // AND (행사 종료일 >= 현재 시간) -> 이미 끝난 행사 제외 (Hotfix by QA)
-    query = query
-      .lte('start_date', end.toISOString())
-      .gte('end_date', start.toISOString())
-      .gte('end_date', new Date().toISOString())
+  if (!res.ok) {
+    throw new Error(`Failed to fetch events: ${res.statusText}`)
   }
 
-  const { data, error } = await query
+  return res.json()
+}
 
-  if (error) {
-    console.error('Error fetching events:', error)
-    throw new Error(error.message)
+export const getEventDetail = async (eventId: string): Promise<SeoulEvent | null> => {
+  try {
+    const baseUrl = getBaseUrl()
+    const res = await fetch(`${baseUrl}/api/events/${eventId}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      cache: 'no-store',
+    })
+
+    if (!res.ok) {
+      if (res.status === 404) return null
+      throw new Error(`Failed to fetch event detail: ${res.statusText}`)
+    }
+
+    return res.json()
+  } catch (error) {
+    console.error(error)
+    return null
   }
-
-  return data as SeoulEvent[]
 }
