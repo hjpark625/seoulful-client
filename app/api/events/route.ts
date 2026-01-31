@@ -30,7 +30,7 @@ export async function GET(request: Request) {
     const isWeekendOnly = searchParams.get('weekend') === 'true'
     const startDate = searchParams.get('startDate')
     const endDate = searchParams.get('endDate')
-    const query = supabase.from('events').select('*')
+    let query = supabase.from('events').select('*')
 
     // 2. Category Filter
     if (categories && categories.length > 0) {

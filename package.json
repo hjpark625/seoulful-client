@@ -11,7 +11,9 @@
     "start": "next start",
     "lint": "eslint",
     "prepare": "husky",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "docker:build": "docker build -t meteoearth/seoulful-client:$(node -p \"require('./package.json').version\") -t meteoearth/seoulful-client:latest .",
+    "docker:push": "docker push meteoearth/seoulful-client:$(node -p \"require('./package.json').version\") && docker push meteoearth/seoulful-client:latest"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [

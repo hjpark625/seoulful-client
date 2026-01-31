@@ -1,8 +1,9 @@
 import { getCategoryStyle } from '@/features/events/constants'
 import { cn } from '@/lib/cn'
+import type { EventCategory } from '@/features/events/types/event'
 
 interface CategoryBadgeProps {
-  category: string
+  category: EventCategory
   className?: string
 }
 

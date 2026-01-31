@@ -5,11 +5,12 @@ import { useState, useEffect } from 'react'
 import { X, ZoomIn } from 'lucide-react'
 import { createPortal } from 'react-dom'
 import { CategoryBadge } from './CategoryBadge'
+import type { EventCategory } from '@/features/events/types/event'
 
 interface EventHeroImageProps {
   src?: string
   alt: string
-  category: string
+  category: EventCategory
   title: string
 }
 

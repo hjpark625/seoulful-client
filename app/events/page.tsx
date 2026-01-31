@@ -8,7 +8,7 @@ import { EventCard } from '@/features/events/components/EventCard'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useState, memo } from 'react'
+import { Suspense, useState, memo } from 'react'
 import type { SeoulEvent } from '@/features/events/types/event'
 
 // Memoized Event List Component
@@ -62,7 +62,7 @@ const EventList = memo(function EventList({
   )
 })
 
-export default function EventsPage() {
+function EventsContent() {
   const searchParams = useSearchParams()
   const initialSearch = searchParams.get('search') || ''
   const [keyword, setKeyword] = useState(initialSearch)
@@ -110,5 +110,19 @@ export default function EventsPage() {
         <EventList events={events} isLoading={isLoading} activeSearch={activeSearch} />
       </main>
     </div>
+  )
+}
+
+export default function EventsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-screen items-center justify-center bg-slate-50">
+          <Skeleton className="h-12 w-12 rounded-full" />
+        </div>
+      }
+    >
+      <EventsContent />
+    </Suspense>
   )
 }

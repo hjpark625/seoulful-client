@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useMemo, useEffect, useRef } from 'react'
+import { useState, useCallback, useMemo, useEffect, useRef, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Home } from 'lucide-react'
@@ -22,6 +22,14 @@ const CATEGORY_FILTERS: { label: string; value: EventCategory }[] = [
 ]
 
 export default function MapPage() {
+  return (
+    <Suspense fallback={<LoadingView />}>
+      <MapContent />
+    </Suspense>
+  )
+}
+
+function MapContent() {
   const searchParams = useSearchParams()
   const initialSearch = searchParams.get('search') || ''
   const targetEventId = searchParams.get('eventId')
