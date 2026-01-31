@@ -72,7 +72,7 @@ export default function AboutPage() {
             여러분의 피드백이 더 나은 주말을 만듭니다.
           </p>
           <div className="flex justify-center gap-4">
-            <Link href="mailto:contact@seoulful.app">
+            <Link href="mailto:zero950@gmail.com">
               <Button variant="outline" size="sm">
                 문의하기
               </Button>
