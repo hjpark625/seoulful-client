@@ -59,9 +59,6 @@ export async function GET(request: Request) {
       query = query.lte('start_date', endDate)
     }
 
-    // 6. Limit
-    query = query.limit(100)
-
     const { data, error } = await query
 
     if (error) {
