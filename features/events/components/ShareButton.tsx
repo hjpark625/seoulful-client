@@ -16,6 +16,7 @@ export function ShareButton({ event }: ShareButtonProps) {
       return
     }
 
+    const host = process.env.NEXT_PUBLIC_API_URL
     const { id, title, description, thumbnailUrl, startDate, endDate, locationName } = event
     const period = `${formatDate(startDate)} ~ ${formatDate(endDate)}`
 
@@ -24,18 +25,18 @@ export function ShareButton({ event }: ShareButtonProps) {
       content: {
         title: title,
         description: `${period} | ${locationName}\n${description || ''}`.slice(0, 100),
-        imageUrl: thumbnailUrl || 'https://seoulful.hjpark625.site/logo.png', // 기본 이미지 처리
+        imageUrl: thumbnailUrl || `${host}/logo.png`, // 기본 이미지 처리
         link: {
-          mobileWebUrl: `${window.location.origin}/events/${id}`,
-          webUrl: `${window.location.origin}/events/${id}`,
+          mobileWebUrl: `${host}/events/${id}`,
+          webUrl: `${host}/events/${id}`,
         },
       },
       buttons: [
         {
           title: '자세히 보기',
           link: {
-            mobileWebUrl: `${window.location.origin}/events/${id}`,
-            webUrl: `${window.location.origin}/events/${id}`,
+            mobileWebUrl: `${host}/events/${id}`,
+            webUrl: `${host}/events/${id}`,
           },
         },
       ],
