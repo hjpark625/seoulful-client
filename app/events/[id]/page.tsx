@@ -12,6 +12,7 @@ import {
   Mic,
   Building2,
   Map as MapIcon,
+  Clock,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { formatDate } from '@/lib/utils/date'
@@ -92,6 +93,13 @@ export default async function EventDetailPage({
                 {formatDate(event.startDate)} ~ {formatDate(event.endDate)}
               </p>
             </EventInfoRow>
+
+            {event.displayTime && (
+              <EventInfoRow icon={Clock} iconClassName="text-slate-500 h-5 w-5">
+                <p className="font-semibold text-slate-900">행사 시간</p>
+                <p className="text-sm text-slate-600">{event.displayTime}</p>
+              </EventInfoRow>
+            )}
 
             <EventInfoRow icon={MapPin} iconClassName="text-slate-500 h-5 w-5">
               <p className="font-semibold text-slate-900">장소</p>

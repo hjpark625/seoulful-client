@@ -27,6 +27,8 @@ export interface DbEvent {
   is_free: boolean
   detail_url: string
   geohash: string
+  inquiry_number: string
+  display_time: string
 }
 
 /**
@@ -53,6 +55,8 @@ export interface SeoulEvent {
   orgName?: string
   theme?: string
   etcDescription?: string
+  inquiryNumber?: string
+  displayTime?: string
 }
 
 export interface EventFilter {

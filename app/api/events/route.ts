@@ -92,6 +92,7 @@ export async function GET(request: Request) {
       orgName: sanitizeNull(event.org_name),
       theme: sanitizeNull(event.theme),
       etcDescription: sanitizeNull(event.etc_desc),
+      displayTime: sanitizeNull(event.display_time),
     }))
 
     return NextResponse.json(events)
