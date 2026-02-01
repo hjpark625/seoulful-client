@@ -5,8 +5,6 @@ import {
   Calendar,
   MapPin,
   ExternalLink,
-  Share2,
-  Heart,
   Ticket,
   Users,
   Mic,
@@ -21,6 +19,8 @@ import { EventHeroImage } from '@/features/events/components/EventHeroImage'
 import { ParkingButton } from '@/features/events/components/PartnerActionButtons'
 import { CategoryBadge } from '@/features/events/components/CategoryBadge'
 import { EventInfoRow } from '@/features/events/components/EventInfoRow'
+import { BookmarkButton } from '@/features/events/components/BookmarkButton'
+import { ShareButton } from '@/features/events/components/ShareButton'
 
 // Force dynamic rendering since we're fetching data
 export const dynamic = 'force-dynamic'
@@ -56,21 +56,8 @@ export default async function EventDetailPage({
           </Button>
         </Link>
         <div className="flex gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full bg-white/50 backdrop-blur-sm hover:bg-white sm:bg-transparent"
-            onClick={() => alert('북마크 기능은 준비 중입니다.')}
-          >
-            <Heart className="h-5 w-5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full bg-white/50 backdrop-blur-sm hover:bg-white sm:bg-transparent"
-          >
-            <Share2 className="h-5 w-5" />
-          </Button>
+          <BookmarkButton />
+          <ShareButton event={event} />
         </div>
       </header>
 

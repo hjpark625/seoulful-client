@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import '@/app/globals.css'
+import { KakaoScript } from '@/components/common/KakaoScript'
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'),
@@ -63,7 +64,10 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
         />
       </head>
-      <body className="bg-slate-50 font-sans text-slate-900 antialiased">{children}</body>
+      <body className="bg-slate-50 font-sans text-slate-900 antialiased">
+        <KakaoScript />
+        {children}
+      </body>
     </html>
   )
 }
