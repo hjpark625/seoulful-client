@@ -8,13 +8,14 @@ export interface DbEvent {
   gu_seq: number
   event_name: string
   period: string
+  place: string
   org_name: string
   use_target: string
   ticket_price: string
   player: string
   describe: string
   etc_desc: string
-  hompage_link: string
+  homepage_link: string
   main_img: string
   reg_date: string // Date string
   is_public: boolean

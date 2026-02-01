@@ -20,7 +20,7 @@ export const getEvents = async (filter?: EventFilter): Promise<SeoulEvent[]> => 
     params.append('geohashes', filter.geohashes.join(','))
   }
 
-  const res = await fetch(`${baseUrl}/api/events?${params.toString()}`, {
+  const res = await fetch(`${baseUrl}/api/events?${params.toString()}&t=${Date.now()}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
     cache: 'no-store', // or 'force-cache' based on requirements
@@ -40,6 +40,7 @@ export const getEventDetail = async (eventId: string): Promise<SeoulEvent | null
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
       cache: 'no-store',
+      next: { revalidate: 0 },
     })
 
     if (!res.ok) {
@@ -47,7 +48,9 @@ export const getEventDetail = async (eventId: string): Promise<SeoulEvent | null
       throw new Error(`Failed to fetch event detail: ${res.statusText}`)
     }
 
-    return res.json()
+    const result = await res.json()
+
+    return result
   } catch (error) {
     console.error(error)
     return null

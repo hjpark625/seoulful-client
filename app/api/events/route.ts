@@ -12,13 +12,15 @@ const getCategorySeqs = (category: EventCategory): number[] => {
     case 'EXHIBITION':
       return [8]
     case 'PERFORMANCE':
-      return [2, 3, 4, 5, 6, 14, 15]
+      return [2, 3, 4, 5, 6, 7, 14, 15]
     case 'OTHER':
-      return [1, 7, 16]
+      return [1, 16]
     default:
       return []
   }
 }
+
+export const dynamic = 'force-dynamic'
 
 export async function GET(request: Request) {
   try {
@@ -68,30 +70,33 @@ export async function GET(request: Request) {
 
     const dbEvents = data as DbEvent[]
 
+    const sanitize = (val: string | null | undefined): string | undefined => {
+      if (!val || val === 'NULL' || val === 'null') return undefined
+      return val
+    }
+
     // Transform to CamelCase
     const events: SeoulEvent[] = dbEvents.map((event) => ({
       id: event.event_id,
       title: event.event_name,
-      description: event.describe,
+      description: sanitize(event.describe),
       category: mapCategorySeqToCategory(event.category_seq),
       startDate: event.start_date,
       endDate: event.end_date,
-      locationName: event.org_name, // Fallback since specific place name is missing in type
+      locationName: sanitize(event.place) || sanitize(event.org_name) || '장소 정보 없음',
       latitude: event.latitude,
       longitude: event.longitude,
       thumbnailUrl: event.main_img,
-      externalLink: event.hompage_link,
+      externalLink: event.homepage_link || event.detail_url || '',
       // Detailed Info
       isFree: event.is_free,
-      ticketPrice: event.ticket_price,
-      useTarget: event.use_target,
-      player: event.player,
-      orgName: event.org_name,
-      theme: event.theme,
-      etcDescription: event.etc_desc,
+      ticketPrice: sanitize(event.ticket_price),
+      useTarget: sanitize(event.use_target),
+      player: sanitize(event.player),
+      orgName: sanitize(event.org_name),
+      theme: sanitize(event.theme),
+      etcDescription: sanitize(event.etc_desc),
     }))
-
-    // console.log('API Response Sample (First Item):', events[0])
 
     return NextResponse.json(events)
   } catch (err) {
