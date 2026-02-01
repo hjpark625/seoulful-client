@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import '@/app/globals.css'
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'),
   title: {
     template: '%s | Seoulful',
     default: 'Seoulful - 서울시 축제/전시 검색 서비스',
