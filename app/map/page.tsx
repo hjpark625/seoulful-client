@@ -65,7 +65,7 @@ function MapContent() {
         onCenterChanged={handleCenterChanged}
         ref={mapRef}
       >
-        <MarkerClusterer averageCenter={true} minLevel={8} key={events.length}>
+        <MarkerClusterer averageCenter={true} minLevel={8} key={JSON.stringify(filter)}>
           {groupedEvents.map((group) => {
             const representativeEvent = group[0]
             const isSelected =
