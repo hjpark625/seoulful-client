@@ -15,7 +15,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { formatDate } from '@/lib/utils/date'
-import { getEventDetail } from '@/features/events/service'
+import { fetchEventById } from '@/features/events/queries'
 import { EventHeroImage } from '@/features/events/components/EventHeroImage'
 import { ParkingButton } from '@/features/events/components/PartnerActionButtons'
 import { CategoryBadge } from '@/features/events/components/CategoryBadge'
@@ -33,7 +33,7 @@ export default async function EventDetailPage({
 }) {
   const { id } = await params
   const { from } = await searchParams
-  const event = await getEventDetail(id)
+  const event = await fetchEventById(id)
 
   const backLink = from === 'map' ? `/map?eventId=${id}` : '/events'
 
@@ -109,6 +109,19 @@ export default async function EventDetailPage({
               <EventInfoRow icon={Users} iconClassName="text-slate-500 h-5 w-5">
                 <p className="font-semibold text-slate-900">이용 대상</p>
                 <p className="text-sm text-slate-600">{event.useTarget}</p>
+              </EventInfoRow>
+            )}
+
+            {event.externalLink && (
+              <EventInfoRow icon={ExternalLink} iconClassName="text-slate-500 h-5 w-5">
+                <p className="font-semibold text-slate-900">공식 홈페이지</p>
+                <Link
+                  href={event.externalLink}
+                  target="_blank"
+                  className="text-sm text-blue-600 underline-offset-4 hover:underline"
+                >
+                  바로가기
+                </Link>
               </EventInfoRow>
             )}
           </div>

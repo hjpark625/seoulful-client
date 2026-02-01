@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase/client'
 import { getWeekendRange } from '@/lib/utils/date'
 import type { DbEvent, SeoulEvent, EventCategory } from '@/features/events/types/event'
 import { mapCategorySeqToCategory } from '@/features/events/constants'
+import { sanitizeNull } from '@/lib/utils/string'
 
 // Helper to map Frontend Category -> DB Sequences
 const getCategorySeqs = (category: EventCategory): number[] => {
@@ -12,13 +13,15 @@ const getCategorySeqs = (category: EventCategory): number[] => {
     case 'EXHIBITION':
       return [8]
     case 'PERFORMANCE':
-      return [2, 3, 4, 5, 6, 14, 15]
+      return [2, 3, 4, 5, 6, 7, 14, 15]
     case 'OTHER':
-      return [1, 7, 16]
+      return [1, 16]
     default:
       return []
   }
 }
+
+export const dynamic = 'force-dynamic'
 
 export async function GET(request: Request) {
   try {
@@ -59,9 +62,6 @@ export async function GET(request: Request) {
       query = query.lte('start_date', endDate)
     }
 
-    // 6. Limit
-    query = query.limit(100)
-
     const { data, error } = await query
 
     if (error) {
@@ -75,26 +75,24 @@ export async function GET(request: Request) {
     const events: SeoulEvent[] = dbEvents.map((event) => ({
       id: event.event_id,
       title: event.event_name,
-      description: event.describe,
+      description: sanitizeNull(event.describe),
       category: mapCategorySeqToCategory(event.category_seq),
       startDate: event.start_date,
       endDate: event.end_date,
-      locationName: event.org_name, // Fallback since specific place name is missing in type
+      locationName: sanitizeNull(event.place) || sanitizeNull(event.org_name) || '장소 정보 없음',
       latitude: event.latitude,
       longitude: event.longitude,
       thumbnailUrl: event.main_img,
-      externalLink: event.hompage_link,
+      externalLink: event.homepage_link || event.detail_url || '',
       // Detailed Info
       isFree: event.is_free,
-      ticketPrice: event.ticket_price,
-      useTarget: event.use_target,
-      player: event.player,
-      orgName: event.org_name,
-      theme: event.theme,
-      etcDescription: event.etc_desc,
+      ticketPrice: sanitizeNull(event.ticket_price),
+      useTarget: sanitizeNull(event.use_target),
+      player: sanitizeNull(event.player),
+      orgName: sanitizeNull(event.org_name),
+      theme: sanitizeNull(event.theme),
+      etcDescription: sanitizeNull(event.etc_desc),
     }))
-
-    // console.log('API Response Sample (First Item):', events[0])
 
     return NextResponse.json(events)
   } catch (err) {
