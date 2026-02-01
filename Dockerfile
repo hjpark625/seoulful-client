@@ -1,5 +1,10 @@
 FROM node:24.13-alpine AS base
 
+# Set timezone to Seoul
+RUN apk add --no-cache tzdata
+ENV TZ=Asia/Seoul
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # 1. Install dependencies only when needed
 FROM base AS deps
 RUN apk add --no-cache libc6-compat

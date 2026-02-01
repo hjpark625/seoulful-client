@@ -11,21 +11,21 @@ export default function Home() {
   const router = useRouter()
   const [keyword, setKeyword] = useState('')
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e: React.SubmitEvent) => {
     e.preventDefault()
     if (!keyword.trim()) return
     router.push(`/events?search=${encodeURIComponent(keyword)}`)
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 px-6 py-12 text-center sm:py-24">
+    <div className="flex min-h-screen flex-col items-center bg-linear-to-b from-slate-50 to-slate-100 px-6 pt-20 pb-10 text-center sm:pt-32">
       {/* Hero Section */}
       <div className="animate-in fade-in slide-in-from-bottom-8 max-w-2xl space-y-10 duration-700 sm:space-y-12">
-        <div className="space-y-6">
+        <div className="flex flex-col items-center space-y-6">
           <span className="inline-block rounded-full bg-blue-100 px-4 py-1.5 text-xs font-bold text-blue-600 shadow-sm">
             ✨ 서울시 공식 데이터 기반
           </span>
-          <h1 className="text-4xl !leading-[1.15] font-extrabold tracking-tight text-slate-900 sm:text-6xl lg:text-7xl">
+          <h1 className="text-4xl leading-[1.15]! font-extrabold tracking-tight text-slate-900 sm:text-6xl lg:text-7xl">
             이번 주말, <br />
             <span className="text-blue-600">서울의 낭만</span>을 찾아서
           </h1>
@@ -97,7 +97,7 @@ export default function Home() {
         />
       </div>
 
-      <footer className="absolute bottom-4 text-xs text-slate-400">
+      <footer className="mt-24 pb-8 text-xs text-slate-400 sm:mt-32">
         © 2026 Seoulful Project. All rights reserved.
       </footer>
     </div>
