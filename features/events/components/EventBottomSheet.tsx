@@ -19,7 +19,6 @@ import type { SeoulEvent } from '@/features/events/types/event'
 import { EventImage } from './EventImage'
 import { CategoryBadge } from './CategoryBadge'
 import { EventInfoRow } from './EventInfoRow'
-import { ParkingButton } from './PartnerActionButtons'
 
 interface EventBottomSheetProps {
   event: SeoulEvent | null
@@ -95,11 +94,6 @@ export function EventBottomSheet({ event, isOpen, onClose, isLoading }: EventBot
                       </p>
                     </div>
                   )}
-                </div>
-
-                {/* 3. Monetization: Partner Action (Parking) */}
-                <div className="mt-6">
-                  <ParkingButton locationName={activeEvent.locationName} />
                 </div>
 
                 {/* 4. Footer CTA */}
