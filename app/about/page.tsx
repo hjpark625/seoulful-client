@@ -1,10 +1,11 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowLeft, Map, Heart, Database, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ValueCard } from '@/components/common/ValueCard'
 
 export const metadata = {
-  title: '서비스 소개',
+  title: '서비스 소개 | Seoulful',
   description: '서울풀이 만들어진 이유와 우리가 제공하는 가치에 대해 이야기합니다.',
 }
 
@@ -16,10 +17,18 @@ export default function AboutPage() {
         <div className="mx-auto flex w-full max-w-3xl items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-slate-600 hover:text-slate-900">
             <ArrowLeft className="h-5 w-5" />
-            <span className="text-sm font-medium">돌아가기</span>
+            <span className="hidden text-sm font-medium sm:inline">돌아가기</span>
           </Link>
-          <span className="font-bold text-slate-900">Seoulful Story</span>
-          <div className="w-16" /> {/* Spacer for centering */}
+          <div className="flex items-center gap-2">
+            <Image src="/logo.png" alt="Seoulful Logo" width={24} height={24} className="rounded-md" />
+            <span className="font-bold text-slate-900">Seoulful Story</span>
+          </div>
+          <div className="hidden w-16 sm:block" /> {/* Spacer for centering */}
+          <Link href="/map" className="block sm:hidden">
+            <Button size="sm" variant="ghost" className="font-bold text-blue-600">
+              지도보기
+            </Button>
+          </Link>
         </div>
       </header>
 
@@ -63,6 +72,9 @@ export default function AboutPage() {
 
         {/* 4. Maker's Message */}
         <section className="mb-20 rounded-2xl bg-slate-50 p-8 text-center sm:p-12">
+          <div className="mb-6 flex justify-center">
+            <Image src="/logo.png" alt="Seoulful Logo" width={48} height={48} className="rounded-xl shadow-sm" />
+          </div>
           <h2 className="mb-4 text-2xl font-bold text-slate-900">만든 사람들</h2>
           <p className="mb-6 leading-relaxed text-slate-600">
             Seoulful은 서울을 사랑하는 1인 개발자와
