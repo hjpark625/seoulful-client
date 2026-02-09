@@ -5,6 +5,7 @@
 이 저장소는 Next.js App Router 기반입니다. 기능별 로직은 도메인 폴더에 가깝게 유지하세요.
 
 - `app/`: 라우트 세그먼트, 페이지 진입점, API 라우트 (`app/api/**/route.ts`)
+- `app/map/`, `app/search/`: 지도/검색 화면과 해당 하위 UI 컴포넌트(`_components`) 및 훅(`_hooks`)
 - `features/events/`: 이벤트 도메인 로직 (components, hooks, service, constants, types)
 - `components/common/`, `components/ui/`: 공용 UI 및 shadcn 스타일 프리미티브
 - `lib/`: 공통 유틸(`lib/utils/*`), API 타입, Supabase 클라이언트, 상태 저장소
@@ -41,7 +42,7 @@ import 순서와 Tailwind 클래스는 포매터 친화적으로 유지하고, P
 현재 전용 테스트 러너가 설정되어 있지 않습니다(`test` 스크립트 없음). 당분간 아래를 기준으로 검증하세요.
 
 - `pnpm lint`와 `pnpm build` 성공을 필수 체크로 간주
-- 변경된 라우트를 수동 검증 (`/map`, `/events`, `/events/[id]`, `/about`)
+- 변경된 라우트를 수동 검증 (`/map`, `/search`, `/events`, `/events/[id]`, `/about`)
 - 테스트 추가 시 기능 코드와 같은 위치에 두고 `*.test.ts(x)` 규칙 사용
 
 ## Commit & Pull Request Guidelines
