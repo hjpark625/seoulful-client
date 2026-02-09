@@ -2,11 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 
-interface PartnerActionButtonsProps {
-  locationName?: string
-}
-
-export function ParkingButton({ locationName }: PartnerActionButtonsProps) {
+export function ParkingButton() {
   const handleParkingClick = () => {
     // TODO: 모두의주차장 딥링크 또는 제휴 페이지 연결
     alert('모두의주차장 연동 기능은 준비 중입니다.')

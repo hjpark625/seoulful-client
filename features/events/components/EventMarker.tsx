@@ -13,7 +13,7 @@ interface EventMarkerProps {
 export function EventMarker({ event, count = 1, onClick, isSelected }: EventMarkerProps) {
   const categoryStyle = getCategoryStyle(event.category)
 
-  if (!event.latitude || !event.longitude) return null
+  if (event.latitude == null || event.longitude == null) return null
 
   return (
     <CustomOverlayMap

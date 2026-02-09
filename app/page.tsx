@@ -1,22 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
 import { MapPin, Calendar, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 
 export default function Home() {
-  const router = useRouter()
-  const [keyword, setKeyword] = useState('')
-
-  const handleSearch = (e: React.SubmitEvent) => {
-    e.preventDefault()
-    if (!keyword.trim()) return
-    router.push(`/events?search=${encodeURIComponent(keyword)}`)
-  }
-
   return (
     <div className="flex min-h-screen flex-col items-center bg-linear-to-b from-slate-50 to-slate-100 px-6 pt-20 pb-10 text-center sm:pt-32">
       {/* Hero Section */}
@@ -37,21 +25,12 @@ export default function Home() {
 
         {/* Search & CTA Buttons */}
         <div className="flex flex-col items-center gap-6">
-          <form
-            onSubmit={handleSearch}
-            className="flex w-full max-w-md items-center gap-2 rounded-full bg-white p-2 shadow-lg ring-1 ring-slate-200 transition-all focus-within:ring-2 focus-within:ring-blue-500 hover:shadow-xl"
-          >
-            <Input
-              type="text"
-              placeholder="관심 있는 지역이나 축제를 검색해보세요"
-              className="h-12 border-0 bg-transparent px-4 text-base placeholder:text-slate-400 focus-visible:ring-0"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-            />
-            <Button size="icon" type="submit" className="h-10 w-10 shrink-0 rounded-full bg-blue-600 hover:bg-blue-700">
-              <Search className="h-5 w-5 text-white" />
-            </Button>
-          </form>
+          <Link href="/search" className="w-full max-w-md">
+            <div className="flex h-14 w-full cursor-pointer items-center gap-3 rounded-full bg-white px-5 shadow-lg ring-1 ring-slate-200 transition-all hover:shadow-xl hover:ring-blue-500 active:scale-95">
+              <Search className="h-5 w-5 text-slate-400" />
+              <span className="text-base text-slate-400">관심 있는 지역이나 축제를 검색해보세요</span>
+            </div>
+          </Link>
 
           <div className="flex flex-col gap-4 pt-2 sm:flex-row sm:justify-center">
             <Link href="/map">

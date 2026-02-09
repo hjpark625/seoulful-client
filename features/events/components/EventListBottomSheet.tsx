@@ -3,7 +3,6 @@ import { Calendar, MapPin } from 'lucide-react'
 import Image from 'next/image'
 import type { SeoulEvent } from '@/features/events/types/event'
 import { getCategoryStyle } from '@/features/events/constants'
-import { Button } from '@/components/ui/button'
 
 interface EventListBottomSheetProps {
   isOpen: boolean
@@ -21,7 +20,7 @@ export function EventListBottomSheet({ isOpen, onClose, events, onSelectEvent }:
         <Drawer.Overlay className="fixed inset-0 z-50 bg-black/40" />
         <Drawer.Content className="fixed right-0 bottom-0 left-0 z-50 mt-24 flex h-[80vh] flex-col rounded-t-[10px] bg-slate-50 outline-none">
           <div className="flex-1 overflow-y-auto rounded-t-[10px] bg-white p-4 pb-20">
-            <div className="mx-auto mb-6 h-1.5 w-12 flex-shrink-0 rounded-full bg-slate-200" />
+            <div className="mx-auto mb-6 h-1.5 w-12 shrink-0 rounded-full bg-slate-200" />
 
             <div className="mb-6 px-2">
               <Drawer.Title className="text-xl font-bold text-slate-900">
