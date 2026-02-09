@@ -9,7 +9,10 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { EventCard } from '@/features/events/components/EventCard'
 import { useEventsInfinite } from '@/features/events/hooks/useEvents'
+import type { EventCategory } from '@/features/events/types/event'
 import { format, addDays } from 'date-fns'
+
+const VALID_CATEGORIES: EventCategory[] = ['FESTIVAL', 'EXHIBITION', 'PERFORMANCE', 'OTHER']
 
 export const SearchResults = memo(function SearchResults() {
   const searchParams = useSearchParams()
@@ -22,10 +25,18 @@ export const SearchResults = memo(function SearchResults() {
 
     const start = searchParams.get('start') || format(today, 'yyyy-MM-dd')
     const end = searchParams.get('end') || format(oneWeekLater, 'yyyy-MM-dd')
+    const categoryParam = searchParams.get('category')
+    const categories = categoryParam
+      ? categoryParam
+          .split(',')
+          .map((c) => c.trim().toUpperCase() as EventCategory)
+          .filter((c): c is EventCategory => VALID_CATEGORIES.includes(c))
+      : undefined
 
     return {
       search: searchParams.get('q') || undefined,
       guSeq: searchParams.get('gu') ? parseInt(searchParams.get('gu')!) : undefined,
+      category: categories && categories.length > 0 ? categories : undefined,
       startDate: start,
       endDate: end,
       limit: 20,
