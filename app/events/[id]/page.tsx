@@ -123,7 +123,7 @@ export default async function EventDetailPage({
           </div>
 
           {/* Monetization: Parking Ticket */}
-          <ParkingButton locationName={event.locationName} />
+          <ParkingButton />
 
           {/* Description */}
           <div>
