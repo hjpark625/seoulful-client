@@ -11,7 +11,7 @@ interface MapState {
 }
 
 const GWANGHWAMUN = { lat: 37.5759, lng: 126.9768 }
-const DEFAULT_ZOOM = 7
+const DEFAULT_ZOOM = 5
 
 export const useMapStore = create<MapState>((set) => ({
   center: GWANGHWAMUN,

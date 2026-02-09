@@ -1,5 +1,4 @@
-import { Home, LocateFixed, Plus, Minus } from 'lucide-react'
-import Link from 'next/link'
+import { LocateFixed, Plus, Minus } from 'lucide-react'
 
 interface MapControlsProps {
   onZoom: (delta: number) => void
@@ -9,38 +8,32 @@ interface MapControlsProps {
 export function MapControls({ onZoom, onLocation }: MapControlsProps) {
   return (
     <>
-      {/* 홈 버튼 */}
-      <Link href="/" className="absolute top-4 left-4 z-20">
-        <button className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-lg ring-1 ring-slate-200 transition-all hover:bg-slate-50 active:scale-95">
-          <Home className="h-5 w-5 text-slate-700" />
-        </button>
-      </Link>
-
-      {/* 줌 컨트롤 */}
-      <div className="absolute top-1/2 right-4 z-20 flex -translate-y-1/2 flex-col gap-2">
+      {/* 줌 컨트롤 (우측 중앙) */}
+      <div className="absolute top-1/2 right-4 z-20 flex -translate-y-1/2 flex-col overflow-hidden rounded-2xl border border-black/5 bg-white/90 shadow-2xl backdrop-blur-md">
         <button
           onClick={() => onZoom(-1)}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-lg ring-1 ring-slate-200 transition-all hover:bg-slate-50 active:scale-95"
+          className="flex h-12 w-12 items-center justify-center transition-all hover:bg-slate-50 active:bg-slate-100"
           aria-label="확대"
         >
-          <Plus className="h-5 w-5 text-slate-700" />
+          <Plus className="h-6 w-6 text-slate-700" />
         </button>
+        <div className="mx-auto h-px w-6 bg-slate-200" />
         <button
           onClick={() => onZoom(1)}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-lg ring-1 ring-slate-200 transition-all hover:bg-slate-50 active:scale-95"
+          className="flex h-12 w-12 items-center justify-center transition-all hover:bg-slate-50 active:bg-slate-100"
           aria-label="축소"
         >
-          <Minus className="h-5 w-5 text-slate-700" />
+          <Minus className="h-6 w-6 text-slate-700" />
         </button>
       </div>
 
-      {/* 내 위치 버튼 */}
+      {/* 내 위치 버튼 (우측 하단) */}
       <button
         onClick={onLocation}
-        className="absolute right-4 bottom-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-lg ring-1 ring-slate-200 transition-all hover:bg-slate-50 active:scale-95"
+        className="absolute right-4 bottom-4 z-20 flex h-12 w-12 items-center justify-center rounded-2xl border border-black/5 bg-white/90 shadow-2xl backdrop-blur-md transition-all hover:bg-white active:scale-95"
         aria-label="내 위치로 이동"
       >
-        <LocateFixed className="h-5 w-5 text-blue-600" />
+        <LocateFixed className="h-6 w-6 text-blue-600" />
       </button>
     </>
   )

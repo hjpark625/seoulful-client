@@ -8,7 +8,7 @@ import { EventMarker } from '@/features/events/components/EventMarker'
 import { ErrorView, LoadingView, DataLoadingIndicator } from '@/app/map/_components/MapStatus'
 import { useMapLogic } from '@/app/map/_hooks/useMapLogic'
 import { MapControls } from '@/app/map/_components/MapControls'
-import { CategoryFilterList } from '@/app/map/_components/CategoryFilterList'
+import { MapSearchHeader } from '@/app/map/_components/MapSearchHeader'
 
 export default function MapPage() {
   return (
@@ -30,7 +30,6 @@ function MapContent() {
     selectedGroup,
     selectedEvent,
     groupedEvents,
-    events,
 
     // Status
     sdkLoading,
@@ -48,24 +47,34 @@ function MapContent() {
     handleMyLocation,
     handleZoom,
     handleCenterChanged,
+    handleMapCreate,
     closeDetailSheet,
     closeListSheet,
   } = useMapLogic()
+
+  const clusterKey = groupedEvents
+    .map((group) => {
+      const representativeEvent = group[0]
+      return `${representativeEvent.id}:${group.length}`
+    })
+    .join('|')
 
   if (sdkError) return <ErrorView />
   if (sdkLoading || !isLocationLoaded) return <LoadingView />
 
   return (
-    <main className="relative h-dvh w-full overflow-hidden">
+    <main className="relative h-dvh w-full touch-none overflow-hidden">
       <KakaoMap
         center={center}
         style={{ width: '100%', height: '100%' }}
         level={zoom}
         onClick={handleMapClick}
         onCenterChanged={handleCenterChanged}
+        onCreate={handleMapCreate}
         ref={mapRef}
+        draggable={true}
       >
-        <MarkerClusterer averageCenter={true} minLevel={8} key={JSON.stringify(filter)}>
+        <MarkerClusterer averageCenter={true} minLevel={8} key={`${filter.category?.join(',') || 'all'}-${clusterKey}`}>
           {groupedEvents.map((group) => {
             const representativeEvent = group[0]
             const isSelected =
@@ -100,8 +109,8 @@ function MapContent() {
       {/* Controls (Zoom, Home, MyLocation) */}
       <MapControls onZoom={handleZoom} onLocation={handleMyLocation} />
 
-      {/* Category Filters */}
-      <CategoryFilterList activeCategories={filter.category} onSelect={handleCategoryClick} />
+      {/* Search Header & Category Filters */}
+      <MapSearchHeader activeCategories={filter.category} onSelectCategory={handleCategoryClick} />
 
       {/* Bottom Sheet (Single Event) */}
       <EventBottomSheet isOpen={!!selectedEventId} onClose={closeDetailSheet} event={selectedEvent} />

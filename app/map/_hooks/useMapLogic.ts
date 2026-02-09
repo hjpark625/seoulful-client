@@ -3,13 +3,12 @@ import { useSearchParams } from 'next/navigation'
 import { useKakaoLoader } from 'react-kakao-maps-sdk'
 import { useEvents } from '@/features/events/hooks/useEvents'
 import { getEventDetail } from '@/features/events/service'
-import { useMapStore, useMapCenter, useMapZoom, useMapActions } from '@/lib/store/useMapStore'
+import { useMapCenter, useMapZoom, useMapActions } from '@/lib/store/useMapStore'
 import { encodeGeohash, getNeighbors } from '@/lib/utils/geohash'
 import type { EventFilter, EventCategory, SeoulEvent } from '@/features/events/types/event'
 
 export function useMapLogic() {
   const searchParams = useSearchParams()
-  const initialSearch = searchParams.get('search') || ''
   const targetEventId = searchParams.get('eventId')
 
   // 1. Kakao Map SDK 로드
@@ -26,10 +25,16 @@ export function useMapLogic() {
   // 3. Local State
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [isLocationLoaded, setIsLocationLoaded] = useState(false)
-  const [filter, setFilter] = useState<EventFilter>(() => ({
-    search: initialSearch,
-    geohashes: getNeighbors(encodeGeohash(center.lat, center.lng, 5)),
-  }))
+
+  // 초기 상태: useState 초기화 시점에 바로 Geohash 계산
+  const [filter, setFilter] = useState<EventFilter>(() => {
+    const initialGeohash = encodeGeohash(center.lat, center.lng, 5)
+    return {
+      geohashes: getNeighbors(initialGeohash),
+      limit: 300,
+    }
+  })
+
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null)
   const [selectedGroup, setSelectedGroup] = useState<SeoulEvent[] | null>(null)
   const [fetchedEvent, setFetchedEvent] = useState<SeoulEvent | null>(null)
@@ -43,22 +48,23 @@ export function useMapLogic() {
   // 5. Effects
   useEffect(() => {
     const handleInitialState = async () => {
-      if (!targetEventId) {
-        setIsLocationLoaded(true)
-        return
-      }
+      // 1. 특정 이벤트 진입 케이스 처리
+      if (targetEventId) {
+        const id = Number(targetEventId)
+        setSelectedEventId(id)
 
-      const id = Number(targetEventId)
-      setSelectedEventId(id)
+        const event = await getEventDetail(targetEventId)
+        if (event) {
+          setFetchedEvent(event)
+          setCenter({ lat: event.latitude, lng: event.longitude })
+          setZoom(4)
 
-      const event = await getEventDetail(targetEventId)
-      if (event) {
-        setFetchedEvent(event)
-        setCenter({ lat: event.latitude, lng: event.longitude })
-        setZoom(4)
-
-        const eventGeohash = encodeGeohash(event.latitude, event.longitude, 5)
-        setFilter((prev) => ({ ...prev, geohashes: getNeighbors(eventGeohash) }))
+          const eventGeohash = encodeGeohash(event.latitude, event.longitude, 5)
+          setFilter((prev) => ({
+            ...prev,
+            geohashes: getNeighbors(eventGeohash),
+          }))
+        }
       }
       setIsLocationLoaded(true)
     }
@@ -70,7 +76,7 @@ export function useMapLogic() {
   const groupedEvents = useMemo(() => {
     const groups = new Map<string, SeoulEvent[]>()
     events.forEach((event) => {
-      if (!event.latitude || !event.longitude) return
+      if (event.latitude == null || event.longitude == null) return
       const key = `${event.latitude},${event.longitude}`
       if (!groups.has(key)) groups.set(key, [])
       groups.get(key)!.push(event)
@@ -173,13 +179,39 @@ export function useMapLogic() {
         const newGeohash = encodeGeohash(lat, lng, 5)
         const newGeohashes = getNeighbors(newGeohash)
 
-        setFilter((prev) => ({ ...prev, geohashes: newGeohashes }))
+        setFilter((prev) => {
+          const isSame =
+            prev.geohashes &&
+            prev.geohashes.length === newGeohashes.length &&
+            prev.geohashes.every((val, index) => val === newGeohashes[index])
+
+          if (isSame) return prev
+          return { ...prev, geohashes: newGeohashes }
+        })
         setZoom(level)
         setCenter({ lat, lng })
       }, 200)
     },
     [setCenter, setZoom],
   )
+
+  const handleMapCreate = (map: kakao.maps.Map) => {
+    mapRef.current = map
+    const lat = map.getCenter().getLat()
+    const lng = map.getCenter().getLng()
+    const newGeohash = encodeGeohash(lat, lng, 5)
+    const newGeohashes = getNeighbors(newGeohash)
+
+    setFilter((prev) => {
+      const isSame =
+        prev.geohashes &&
+        prev.geohashes.length === newGeohashes.length &&
+        prev.geohashes.every((val, index) => val === newGeohashes[index])
+
+      if (isSame) return prev
+      return { ...prev, geohashes: newGeohashes }
+    })
+  }
 
   return {
     // State
@@ -210,6 +242,7 @@ export function useMapLogic() {
     handleMyLocation,
     handleZoom,
     handleCenterChanged,
+    handleMapCreate, // 추가됨
     closeDetailSheet,
     closeListSheet,
   }
