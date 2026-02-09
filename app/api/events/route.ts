@@ -33,7 +33,15 @@ export async function GET(request: Request) {
     const isWeekendOnly = searchParams.get('weekend') === 'true'
     const startDate = searchParams.get('startDate')
     const endDate = searchParams.get('endDate')
-    let query = supabase.from('events').select('*')
+    const guSeq = searchParams.get('guSeq')
+    const geohashes = searchParams.get('geohashes')?.split(',')
+
+    // Pagination Params
+    const page = parseInt(searchParams.get('page') || '1')
+    const limit = parseInt(searchParams.get('limit') || '20')
+    const offset = (page - 1) * limit
+
+    let query = supabase.from('events').select('*', { count: 'exact' })
 
     // 2. Category Filter
     if (categories && categories.length > 0) {
@@ -48,7 +56,24 @@ export async function GET(request: Request) {
       query = query.or(`event_name.ilike.%${search}%,org_name.ilike.%${search}%`)
     }
 
-    // 4. Weekend Logic
+    // 4. Gu Filter
+    if (guSeq) {
+      query = query.eq('gu_seq', parseInt(guSeq))
+    }
+
+    // 5. Geohash Filter (For Map)
+    if (geohashes && geohashes.length > 0) {
+      // Filter out empty strings if any
+      const validGeohashes = geohashes.filter((g) => g.trim() !== '')
+      if (validGeohashes.length > 0) {
+        // Use prefix matching (LIKE) instead of exact match (IN)
+        // Because DB might store longer precision geohashes (e.g., 7 chars) while client sends 5 chars.
+        const orCondition = validGeohashes.map((hash) => `geohash.like.${hash}%`).join(',')
+        query = query.or(orCondition)
+      }
+    }
+
+    // 6. Weekend Logic
     if (isWeekendOnly) {
       const { start, end } = getWeekendRange()
       query = query.lte('start_date', end.toISOString()).gte('end_date', start.toISOString())
@@ -62,7 +87,10 @@ export async function GET(request: Request) {
       query = query.lte('start_date', endDate)
     }
 
-    const { data, error } = await query
+    // Pagination
+    const { data, error, count } = await query
+      .order('start_date', { ascending: false })
+      .range(offset, offset + limit - 1)
 
     if (error) {
       console.error('Supabase Error:', error)
@@ -95,7 +123,12 @@ export async function GET(request: Request) {
       displayTime: sanitizeNull(event.display_time),
     }))
 
-    return NextResponse.json(events)
+    return NextResponse.json({
+      events,
+      totalCount: count || 0,
+      page,
+      limit,
+    })
   } catch (err) {
     console.error('API Error:', err)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
