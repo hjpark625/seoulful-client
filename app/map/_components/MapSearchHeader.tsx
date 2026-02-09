@@ -24,18 +24,21 @@ export function MapSearchHeader({ activeCategories, onSelectCategory }: MapSearc
         {/* 검색바 영역 */}
         <div className="flex items-center gap-2">
           {/* 홈 버튼 */}
-          <Link href="/">
-            <button className="flex h-12 w-12 items-center justify-center rounded-2xl border border-black/5 bg-white shadow-xl transition-all active:scale-95">
-              <Home className="h-5 w-5 text-slate-700" />
-            </button>
+          <Link
+            href="/"
+            aria-label="홈으로 이동"
+            className="flex h-12 w-12 items-center justify-center rounded-2xl border border-black/5 bg-white shadow-xl transition-all active:scale-95"
+          >
+            <Home className="h-5 w-5 text-slate-700" />
           </Link>
 
           {/* 검색 입력바 (클릭 시 검색 페이지로 이동) */}
-          <Link href="/search" className="flex-1">
-            <div className="flex h-12 w-full cursor-pointer items-center gap-3 rounded-2xl border border-black/5 bg-white px-4 shadow-xl transition-all active:bg-slate-50">
-              <Search className="h-5 w-5 text-slate-400" />
-              <span className="text-base text-slate-400">행사 이름, 장소를 검색해보세요</span>
-            </div>
+          <Link
+            href="/search"
+            className="flex h-12 flex-1 items-center gap-3 rounded-2xl border border-black/5 bg-white px-4 shadow-xl transition-all active:bg-slate-50"
+          >
+            <Search className="h-5 w-5 text-slate-400" />
+            <span className="text-base text-slate-400">행사 이름, 장소를 검색해보세요</span>
           </Link>
         </div>
 

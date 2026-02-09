@@ -129,6 +129,20 @@ export function useMapLogic() {
     })
   }, [])
 
+  const updateGeohashFilter = useCallback((lat: number, lng: number) => {
+    const newGeohashes = getNeighbors(encodeGeohash(lat, lng, 5))
+
+    setFilter((prev) => {
+      const isSame =
+        prev.geohashes &&
+        prev.geohashes.length === newGeohashes.length &&
+        prev.geohashes.every((val, index) => val === newGeohashes[index])
+
+      if (isSame) return prev
+      return { ...prev, geohashes: newGeohashes }
+    })
+  }, [])
+
   const handleMyLocation = useCallback(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -142,8 +156,7 @@ export function useMapLogic() {
             mapRef.current.panTo(new kakao.maps.LatLng(latitude, longitude))
           }
 
-          const currentGeohash = encodeGeohash(latitude, longitude, 5)
-          setFilter((prev) => ({ ...prev, geohashes: getNeighbors(currentGeohash) }))
+          updateGeohashFilter(latitude, longitude)
         },
         (err) => {
           alert('위치 정보를 가져올 수 없습니다. 권한 설정을 확인해주세요.')
@@ -153,7 +166,7 @@ export function useMapLogic() {
     } else {
       alert('이 브라우저에서는 위치 서비스를 지원하지 않습니다.')
     }
-  }, [setCenter])
+  }, [setCenter, updateGeohashFilter])
 
   const handleZoom = useCallback(
     (delta: number) => {
@@ -176,42 +189,26 @@ export function useMapLogic() {
         const lat = centerPos.getLat()
         const lng = centerPos.getLng()
 
-        const newGeohash = encodeGeohash(lat, lng, 5)
-        const newGeohashes = getNeighbors(newGeohash)
-
-        setFilter((prev) => {
-          const isSame =
-            prev.geohashes &&
-            prev.geohashes.length === newGeohashes.length &&
-            prev.geohashes.every((val, index) => val === newGeohashes[index])
-
-          if (isSame) return prev
-          return { ...prev, geohashes: newGeohashes }
-        })
+        updateGeohashFilter(lat, lng)
         setZoom(level)
         setCenter({ lat, lng })
       }, 200)
     },
-    [setCenter, setZoom],
+    [setCenter, setZoom, updateGeohashFilter],
   )
 
   const handleMapCreate = (map: kakao.maps.Map) => {
     mapRef.current = map
     const lat = map.getCenter().getLat()
     const lng = map.getCenter().getLng()
-    const newGeohash = encodeGeohash(lat, lng, 5)
-    const newGeohashes = getNeighbors(newGeohash)
-
-    setFilter((prev) => {
-      const isSame =
-        prev.geohashes &&
-        prev.geohashes.length === newGeohashes.length &&
-        prev.geohashes.every((val, index) => val === newGeohashes[index])
-
-      if (isSame) return prev
-      return { ...prev, geohashes: newGeohashes }
-    })
+    updateGeohashFilter(lat, lng)
   }
+
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
+    }
+  }, [])
 
   return {
     // State

@@ -61,7 +61,7 @@ export const SearchResults = memo(function SearchResults() {
 
   const virtualizer = useWindowVirtualizer({
     count: rows.length,
-    estimateSize: () => 400,
+    estimateSize: () => 480, // 데스크탑 카드 높이에 맞춰 상향 조정
     overscan: 5,
     scrollMargin: 0,
   })
@@ -96,10 +96,12 @@ export const SearchResults = memo(function SearchResults() {
             {virtualizer.getVirtualItems().map((virtualRow) => (
               <div
                 key={virtualRow.key}
+                data-index={virtualRow.index}
+                ref={virtualizer.measureElement}
                 className="absolute top-0 left-0 grid w-full gap-6 sm:grid-cols-2 lg:grid-cols-3"
                 style={{
-                  height: `${virtualRow.size}px`,
                   transform: `translateY(${virtualRow.start}px)`,
+                  paddingBottom: '24px', // gap-6에 해당하는 간격 유지
                 }}
               >
                 {rows[virtualRow.index].map((event) => (

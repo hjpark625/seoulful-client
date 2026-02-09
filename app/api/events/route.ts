@@ -5,6 +5,12 @@ import type { DbEvent, SeoulEvent, EventCategory } from '@/features/events/types
 import { mapCategorySeqToCategory } from '@/features/events/constants'
 import { sanitizeNull } from '@/lib/utils/string'
 
+const VALID_CATEGORIES: EventCategory[] = ['FESTIVAL', 'EXHIBITION', 'PERFORMANCE', 'OTHER']
+const GEOHASH_REGEX = /^[0123456789bcdefghjkmnpqrstuvwxyz]+$/i
+const DEFAULT_PAGE = 1
+const DEFAULT_LIMIT = 20
+const MAX_LIMIT = 300
+
 // Helper to map Frontend Category -> DB Sequences
 const getCategorySeqs = (category: EventCategory): number[] => {
   switch (category) {
@@ -21,6 +27,23 @@ const getCategorySeqs = (category: EventCategory): number[] => {
   }
 }
 
+const parsePositiveInt = (value: string | null, fallback: number, max?: number): number => {
+  if (!value) return fallback
+  const parsed = Number.parseInt(value, 10)
+  if (!Number.isFinite(parsed) || parsed < 1) return fallback
+  if (max && parsed > max) return max
+  return parsed
+}
+
+const sanitizeSearchTerm = (value: string | null): string | null => {
+  if (!value) return null
+  const trimmed = value.trim().slice(0, 100)
+  if (!trimmed) return null
+
+  // Supabase or-filter 구문 파싱 충돌 방지를 위해 예약 문자를 제거
+  return trimmed.replace(/[(),]/g, ' ')
+}
+
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: Request) {
@@ -28,23 +51,32 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
 
     // Extract Query Params
-    const categories = searchParams.get('category')?.split(',') as EventCategory[] | undefined
-    const search = searchParams.get('search')
+    const categories =
+      searchParams
+        .get('category')
+        ?.split(',')
+        .filter((value): value is EventCategory => VALID_CATEGORIES.includes(value as EventCategory)) || []
+    const search = sanitizeSearchTerm(searchParams.get('search'))
     const isWeekendOnly = searchParams.get('weekend') === 'true'
     const startDate = searchParams.get('startDate')
     const endDate = searchParams.get('endDate')
-    const guSeq = searchParams.get('guSeq')
-    const geohashes = searchParams.get('geohashes')?.split(',')
+    const guSeq = parsePositiveInt(searchParams.get('guSeq'), 0)
+    const geohashes =
+      searchParams
+        .get('geohashes')
+        ?.split(',')
+        .map((hash) => hash.trim().toLowerCase())
+        .filter((hash) => hash.length > 0 && GEOHASH_REGEX.test(hash)) || []
 
     // Pagination Params
-    const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '20')
+    const page = parsePositiveInt(searchParams.get('page'), DEFAULT_PAGE)
+    const limit = parsePositiveInt(searchParams.get('limit'), DEFAULT_LIMIT, MAX_LIMIT)
     const offset = (page - 1) * limit
 
     let query = supabase.from('events').select('*', { count: 'exact' })
 
     // 2. Category Filter
-    if (categories && categories.length > 0) {
+    if (categories.length > 0) {
       const allSeqs = categories.flatMap((cat) => getCategorySeqs(cat))
       if (allSeqs.length > 0) {
         query = query.in('category_seq', allSeqs)
@@ -57,20 +89,16 @@ export async function GET(request: Request) {
     }
 
     // 4. Gu Filter
-    if (guSeq) {
-      query = query.eq('gu_seq', parseInt(guSeq))
+    if (guSeq > 0) {
+      query = query.eq('gu_seq', guSeq)
     }
 
     // 5. Geohash Filter (For Map)
-    if (geohashes && geohashes.length > 0) {
-      // Filter out empty strings if any
-      const validGeohashes = geohashes.filter((g) => g.trim() !== '')
-      if (validGeohashes.length > 0) {
-        // Use prefix matching (LIKE) instead of exact match (IN)
-        // Because DB might store longer precision geohashes (e.g., 7 chars) while client sends 5 chars.
-        const orCondition = validGeohashes.map((hash) => `geohash.like.${hash}%`).join(',')
-        query = query.or(orCondition)
-      }
+    if (geohashes.length > 0) {
+      // Use prefix matching (LIKE) instead of exact match (IN)
+      // because DB might store longer precision geohashes than client.
+      const orCondition = geohashes.map((hash) => `geohash.like.${hash}%`).join(',')
+      query = query.or(orCondition)
     }
 
     // 6. Weekend Logic

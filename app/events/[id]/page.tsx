@@ -1,17 +1,6 @@
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import {
-  ArrowLeft,
-  Calendar,
-  MapPin,
-  ExternalLink,
-  Ticket,
-  Users,
-  Mic,
-  Building2,
-  Map as MapIcon,
-  Clock,
-} from 'lucide-react'
+import Link from 'next/link'
+import { Calendar, MapPin, ExternalLink, Ticket, Users, Mic, Building2, Map as MapIcon, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { formatDate } from '@/lib/utils/date'
 import { fetchEventById } from '@/features/events/queries'
@@ -21,6 +10,7 @@ import { CategoryBadge } from '@/features/events/components/CategoryBadge'
 import { EventInfoRow } from '@/features/events/components/EventInfoRow'
 import { BookmarkButton } from '@/features/events/components/BookmarkButton'
 import { ShareButton } from '@/features/events/components/ShareButton'
+import { BackButton } from '@/components/common/BackButton'
 
 // Force dynamic rendering since we're fetching data
 export const dynamic = 'force-dynamic'
@@ -36,7 +26,7 @@ export default async function EventDetailPage({
   const { from } = await searchParams
   const event = await fetchEventById(id)
 
-  const backLink = from === 'map' ? `/map?eventId=${id}` : '/events'
+  const backFallback = from === 'map' ? `/map?eventId=${id}` : '/search'
 
   if (!event) {
     notFound()
@@ -46,15 +36,7 @@ export default async function EventDetailPage({
     <div className="min-h-screen bg-white pb-24">
       {/* Navbar (Absolute on mobile, Sticky on desktop) */}
       <header className="fixed top-0 right-0 left-0 z-20 flex items-center justify-between p-4 sm:sticky sm:border-b sm:border-slate-100 sm:bg-white/80 sm:backdrop-blur-md">
-        <Link href={backLink}>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full bg-white/50 backdrop-blur-sm hover:bg-white sm:bg-transparent"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-        </Link>
+        <BackButton fallbackUrl={backFallback} />
         <div className="flex gap-2">
           <BookmarkButton />
           <ShareButton event={event} />
