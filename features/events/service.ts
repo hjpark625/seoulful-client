@@ -1,4 +1,4 @@
-import type { SeoulEvent, EventFilter } from '@/features/events/types/event'
+import type { SeoulEvent, EventFilter, EventsResponse } from '@/features/events/types/event'
 
 const getBaseUrl = () => {
   if (typeof window !== 'undefined') return ''
@@ -6,7 +6,7 @@ const getBaseUrl = () => {
   return 'http://localhost:3000'
 }
 
-export const getEvents = async (filter?: EventFilter): Promise<SeoulEvent[]> => {
+export const getEvents = async (filter?: EventFilter): Promise<EventsResponse> => {
   const params = new URLSearchParams()
   const baseUrl = getBaseUrl()
 
@@ -16,6 +16,9 @@ export const getEvents = async (filter?: EventFilter): Promise<SeoulEvent[]> => 
   if (filter?.search) params.append('search', filter.search)
   if (filter?.startDate) params.append('startDate', filter.startDate)
   if (filter?.endDate) params.append('endDate', filter.endDate)
+  if (filter?.guSeq) params.append('guSeq', filter.guSeq.toString())
+  if (filter?.page) params.append('page', filter.page.toString())
+  if (filter?.limit) params.append('limit', filter.limit.toString())
   if (filter?.geohashes && filter.geohashes.length > 0) {
     params.append('geohashes', filter.geohashes.join(','))
   }

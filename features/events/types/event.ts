@@ -65,6 +65,16 @@ export interface EventFilter {
   startDate?: string
   endDate?: string
   geohashes?: string[] // 중심 + 인접 8방향 geohash 배열
+  guSeq?: number
+  page?: number
+  limit?: number
+}
+
+export interface EventsResponse {
+  events: SeoulEvent[]
+  totalCount: number
+  page: number
+  limit: number
 }
 
 export type EventCategory = 'FESTIVAL' | 'EXHIBITION' | 'PERFORMANCE' | 'OTHER'

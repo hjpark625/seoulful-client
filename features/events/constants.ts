@@ -48,3 +48,37 @@ export const mapCategorySeqToCategory = (seq: number): EventCategory => {
   if ([2, 3, 4, 5, 6, 14, 15].includes(seq)) return 'PERFORMANCE'
   return 'OTHER'
 }
+
+export const SEOUL_GU_MAP: Record<number, string> = {
+  1: '강북구',
+  2: '강남구',
+  3: '강동구',
+  4: '강서구',
+  5: '관악구',
+  6: '광진구',
+  7: '구로구',
+  8: '금천구',
+  9: '노원구',
+  10: '도봉구',
+  11: '동대문구',
+  12: '동작구',
+  13: '마포구',
+  14: '서대문구',
+  15: '서초구',
+  16: '성동구',
+  17: '성북구',
+  18: '송파구',
+  19: '양천구',
+  20: '영등포구',
+  21: '용산구',
+  22: '은평구',
+  23: '종로구',
+  24: '중구',
+  25: '중랑구',
+  26: '기타(서울대공원 등)',
+}
+
+export const SEOUL_GU_LIST = Object.entries(SEOUL_GU_MAP).map(([id, name]) => ({
+  id: parseInt(id),
+  name,
+}))
