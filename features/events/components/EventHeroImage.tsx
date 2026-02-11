@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { X, ZoomIn } from 'lucide-react'
 import { createPortal } from 'react-dom'
 import { CategoryBadge } from './CategoryBadge'
@@ -16,6 +16,19 @@ interface EventHeroImageProps {
 
 export function EventHeroImage({ src, alt, category, title }: EventHeroImageProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [failedSrc, setFailedSrc] = useState<string | null>(null)
+  const loggedImageErrorsRef = useRef<Set<string>>(new Set())
+  const hasImageError = Boolean(src && failedSrc === src)
+
+  const handleImageError = (imageSrc: string) => {
+    if (!loggedImageErrorsRef.current.has(imageSrc)) {
+      loggedImageErrorsRef.current.add(imageSrc)
+      console.warn('[EventHeroImage] 이미지 로드 실패', { src: imageSrc, alt })
+    }
+
+    setFailedSrc(imageSrc)
+    setIsOpen(false)
+  }
 
   // 모달 열렸을 때 스크롤 막기
   useEffect(() => {
@@ -33,9 +46,9 @@ export function EventHeroImage({ src, alt, category, title }: EventHeroImageProp
     <>
       <div
         className="group relative aspect-square w-full cursor-pointer overflow-hidden bg-slate-100 sm:aspect-21/9 sm:rounded-b-3xl"
-        onClick={() => src && setIsOpen(true)}
+        onClick={() => src && !hasImageError && setIsOpen(true)}
       >
-        {src ? (
+        {src && !hasImageError ? (
           <>
             <Image
               src={src}
@@ -44,6 +57,7 @@ export function EventHeroImage({ src, alt, category, title }: EventHeroImageProp
               priority
               sizes="(max-width: 768px) 100vw, 1200px"
               className="object-cover transition-transform duration-700 group-hover:scale-105"
+              onError={() => handleImageError(src)}
             />
             {/* Hover overlay with Zoom icon */}
             <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/20">
@@ -51,7 +65,9 @@ export function EventHeroImage({ src, alt, category, title }: EventHeroImageProp
             </div>
           </>
         ) : (
-          <div className="flex h-full items-center justify-center text-slate-400">이미지 없음</div>
+          <div className="flex h-full items-center justify-center text-slate-500" role="img" aria-label={alt}>
+            {src ? '이미지를 불러올 수 없습니다' : '이미지 없음'}
+          </div>
         )}
 
         {/* Mobile Gradient & Text Overlay */}
@@ -66,6 +82,7 @@ export function EventHeroImage({ src, alt, category, title }: EventHeroImageProp
       {/* Fullscreen Image Modal */}
       {isOpen &&
         src &&
+        !hasImageError &&
         createPortal(
           <div
             className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm duration-200"
