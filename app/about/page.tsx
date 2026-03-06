@@ -95,11 +95,6 @@ export default function AboutPage() {
                   이메일 문의
                 </Button>
               </Link>
-              <Link href="https://github.com/hjpark625/seoulful-client" target="_blank">
-                <Button variant="outline" size="sm">
-                  저장소 보기
-                </Button>
-              </Link>
             </div>
             <p className="max-w-md text-sm leading-relaxed text-slate-500">
               서비스 오류, 기능 제안, 데이터 제보는 GitHub에서 받고 있습니다. 개인 문의나 간단한 문의는 이메일로
