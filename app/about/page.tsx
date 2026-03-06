@@ -83,17 +83,28 @@ export default function AboutPage() {
             <br />
             여러분의 피드백이 더 나은 주말을 만듭니다.
           </p>
-          <div className="flex justify-center gap-4">
-            <Link href="mailto:zero950@gmail.com">
-              <Button variant="outline" size="sm">
-                문의하기
-              </Button>
-            </Link>
-            <Link href="https://github.com/hjpark625" target="_blank">
-              <Button variant="outline" size="sm">
-                Github
-              </Button>
-            </Link>
+          <div className="flex flex-col items-center gap-3">
+            <div className="flex justify-center gap-4">
+              <Link href="https://github.com/hjpark625/seoulful-client/issues/new/choose" target="_blank">
+                <Button variant="outline" size="sm">
+                  버그/제안 등록
+                </Button>
+              </Link>
+              <Link href="mailto:zero950@gmail.com">
+                <Button variant="outline" size="sm">
+                  이메일 문의
+                </Button>
+              </Link>
+              <Link href="https://github.com/hjpark625/seoulful-client" target="_blank">
+                <Button variant="outline" size="sm">
+                  저장소 보기
+                </Button>
+              </Link>
+            </div>
+            <p className="max-w-md text-sm leading-relaxed text-slate-500">
+              서비스 오류, 기능 제안, 데이터 제보는 GitHub에서 받고 있습니다. 개인 문의나 간단한 문의는 이메일로
+              보내주세요.
+            </p>
           </div>
         </section>
 

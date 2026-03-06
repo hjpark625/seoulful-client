@@ -114,6 +114,51 @@ pnpm dev
 
 ---
 
+## 🐛 Feedback & Issue Guide
+
+Seoulful은 문의 성격에 따라 GitHub Issues와 이메일을 함께 운영합니다.
+
+문의 채널:
+
+- GitHub Issues: 버그 제보, 기능 제안, 데이터 오류 제보
+- 이메일 문의: 개인 문의, 공개가 어려운 문의, 아주 간단한 문의
+
+- `bug`: 화면 오류, API 동작 이상, 성능 저하, 모바일 UI 깨짐 등 실제 동작 문제
+- `enhancement`: 검색 경험 개선, 필터 추가, UX 개선, 신규 기능 제안
+- `data`: 행사명, 날짜, 장소, 좌표, 종료 여부 등 공공데이터 기반 정보 오류
+
+접수 경로:
+
+- 서비스 내 `/about` 페이지의 `버그/제안 등록` 버튼
+- GitHub의 [Issue 생성 페이지](https://github.com/hjpark625/seoulful-client/issues/new/choose)
+- 이메일: `zero950@gmail.com`
+
+운영 원칙:
+
+- 재현 가능한 사용자 문제는 `bug`를 우선 사용합니다.
+- 제품 아이디어나 개선 요청은 `enhancement`로 분류합니다.
+- 데이터 자체가 틀린 경우는 기능 문제와 분리해 `data`로 관리합니다.
+- 공개하기 어려운 문의나 답변을 1:1로 받아야 하는 경우 이메일을 사용합니다.
+- 스크린샷, 재현 단계, 참고 링크가 포함될수록 처리 속도가 빨라집니다.
+
+추천 라벨 설정:
+
+| Label | Color | Description |
+| :--- | :--- | :--- |
+| `bug` | `d73a4a` | 실제 동작 오류, UI 깨짐, 성능 이슈를 추적합니다. |
+| `enhancement` | `1d76db` | 기능 제안, UX 개선, 제품 아이디어를 관리합니다. |
+| `data` | `0e8a16` | 행사 정보, 날짜, 장소, 좌표 등 데이터 오류를 관리합니다. |
+| `needs-triage` | `fbca04` | 새로 등록된 이슈로, 확인 및 분류가 아직 끝나지 않았음을 나타냅니다. |
+
+운영 메모:
+
+- 모든 이슈 템플릿은 카테고리 라벨과 함께 `needs-triage`를 기본 부여합니다.
+- 모든 이슈 템플릿은 기본 담당자를 `hjpark625`로 지정합니다.
+- 확인이 끝난 뒤에는 `needs-triage`를 제거하고 필요한 후속 라벨을 수동으로 추가합니다.
+- `question` 라벨은 현재 사용하지 않습니다. 단순 문의는 이메일로 받습니다.
+
+---
+
 ## 📝 License
 
 Distributed under the MIT License. See `LICENSE` for more information.

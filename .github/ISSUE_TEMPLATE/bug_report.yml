@@ -1,0 +1,72 @@
+name: 버그 제보
+description: 화면 오류, 동작 이상, 성능 문제를 제보합니다.
+title: '[Bug] '
+labels:
+  - bug
+  - needs-triage
+assignees:
+  - hjpark625
+body:
+  - type: markdown
+    attributes:
+      value: |
+        문제를 빠르게 확인할 수 있도록 가능한 한 구체적으로 작성해 주세요.
+  - type: textarea
+    id: summary
+    attributes:
+      label: 문제 요약
+      description: 어떤 문제가 발생했는지 한두 문장으로 설명해 주세요.
+      placeholder: 지도에서 마커를 눌렀을 때 상세 패널이 열리지 않습니다.
+    validations:
+      required: true
+  - type: dropdown
+    id: page
+    attributes:
+      label: 발생 위치
+      description: 문제가 발생한 페이지를 선택해 주세요.
+      options:
+        - /map
+        - /search
+        - /events/[id]
+        - /about
+        - 기타
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 재현 방법
+      description: 순서대로 적어 주세요.
+      placeholder: |
+        1. /map 페이지로 이동
+        2. 특정 마커 클릭
+        3. 상세 정보 버튼 클릭
+        4. 아무 반응이 없음
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 기대한 결과
+      placeholder: 행사 상세 패널이 열려야 합니다.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 실제 결과
+      placeholder: 클릭 후 로딩 없이 그대로 유지됩니다.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: 사용 환경
+      description: 브라우저, 기기, 운영체제를 적어 주세요.
+      placeholder: iPhone 15 Safari / macOS Chrome 134
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: 스크린샷 또는 참고 자료
+      description: 이미지, 영상, 콘솔 로그가 있다면 첨부해 주세요.
+      placeholder: 스크린샷이나 에러 로그를 붙여 넣어 주세요.

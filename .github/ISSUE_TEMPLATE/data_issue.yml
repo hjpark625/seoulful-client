@@ -1,0 +1,58 @@
+name: 데이터 오류 제보
+description: 행사명, 장소, 날짜, 좌표 등 공공데이터 기반 정보 오류를 제보합니다.
+title: '[Data] '
+labels:
+  - data
+  - needs-triage
+assignees:
+  - hjpark625
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Seoulful은 공공데이터를 바탕으로 동작합니다. 어떤 정보가 잘못되었는지 구체적으로 알려 주시면 수정과 검증이 빨라집니다.
+  - type: input
+    id: event-name
+    attributes:
+      label: 행사명 또는 장소명
+      placeholder: 서울빛초롱축제 / 서울시립미술관
+    validations:
+      required: true
+  - type: dropdown
+    id: page
+    attributes:
+      label: 발견한 위치
+      description: 어디에서 잘못된 정보를 보셨나요?
+      options:
+        - /map
+        - /search
+        - /events/[id]
+        - 기타
+    validations:
+      required: true
+  - type: textarea
+    id: wrong-data
+    attributes:
+      label: 잘못된 정보
+      description: 어떤 값이 잘못되었는지 적어 주세요.
+      placeholder: 종료된 행사인데 아직 진행 중으로 표시됩니다.
+    validations:
+      required: true
+  - type: textarea
+    id: correct-data
+    attributes:
+      label: 올바른 정보 또는 참고 내용
+      description: 알고 계신 정확한 정보가 있다면 적어 주세요.
+      placeholder: 공식 홈페이지 기준 2026년 3월 1일에 종료되었습니다.
+  - type: input
+    id: reference-link
+    attributes:
+      label: 참고 링크
+      description: 공식 홈페이지나 공공데이터 링크가 있다면 남겨 주세요.
+      placeholder: https://...
+  - type: textarea
+    id: additional
+    attributes:
+      label: 추가 설명
+      description: 스크린샷이나 맥락 설명이 있다면 적어 주세요.
+      placeholder: 검색 결과와 상세 페이지의 날짜가 서로 다르게 보입니다.
