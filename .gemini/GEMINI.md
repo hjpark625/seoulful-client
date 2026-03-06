@@ -95,11 +95,15 @@ pnpm lint
 
 ## 5. 개발 컨벤션
 
-### 코딩 스타일
+### 코딩 스타일 & 네이밍 규칙
 
+- **기본 설정:** TypeScript 우선, 함수형 React 컴포넌트, 2칸 들여쓰기, 세미콜론 미사용, 작은 따옴표, trailing comma 사용.
 - **스타일링:** Tailwind CSS 유틸리티 클래스 사용. 클래스 병합 시 `@/lib/cn` 활용.
-- **컴포넌트:** TypeScript 인터페이스를 포함한 함수형 컴포넌트 지향.
-- **임포트:** `tsconfig.json`에 설정된 절대 경로(`@/components/...`) 사용.
+- **컴포넌트:** `PascalCase.tsx` (예: `EventCard.tsx`).
+- **Hooks:** `useXxx.ts` (예: `useEvents.ts`).
+- **Utilities:** `lib/utils/` 아래 짧은 소문자 파일명.
+- **포맷팅:** Prettier (`prettier.config.mjs`) + Tailwind plugin.
+- **린팅:** ESLint (`eslint.config.mjs`) + Next.js + `typescript-eslint`.
 
 ### 상태 관리 전략
 
@@ -112,10 +116,21 @@ pnpm lint
 - 클라이언트 측 클러스터링 및 쿼리를 위해 `ngeohash` (정밀도 5) 사용.
 - 지도 성능 최적화를 위해 마커 클러스터링 적용.
 
-### Git 및 커밋
+### 테스트 가이드라인
+
+- `pnpm lint`와 `pnpm build` 성공을 필수 체크로 간주.
+- 변경된 라우트를 수동 검증 (`/map`, `/search`, `/events/[id]`, `/about`).
+- 테스트 추가 시 기능 코드와 같은 위치에 두고 `*.test.ts(x)` 규칙 사용.
+
+### Git 커밋 및 Pull Request 가이드라인
 
 - **커밋 메시지:** 한국어로 작성 (프로젝트 히스토리 준수).
-- **구조:** `type: message` 형식 (예: `feat: 검색 페이지 구현`).
+- **구조:** Conventional Commit 패턴 (`type: message` 또는 `type(scope): message`).
+  - 예: `feat: 검색 페이지 구현`, `refactor(map): 지도 초기화 로직 개선`.
+- **Pull Request:**
+  - 사용자 관점 변경사항 요약 포함.
+  - UI 변경 시 스크린샷/영상 첨부 (데스크톱+모바일).
+  - 환경변수나 설정 변경 사항 명시.
 
 ## 6. 비즈니스 컨텍스트 (에이전트 가이드)
 
