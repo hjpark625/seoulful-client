@@ -50,7 +50,7 @@ export const useEventsInfinite = (filter: EventFilter) => {
     {
       revalidateFirstPage: false,
       revalidateOnFocus: false,
-      persistSize: true,
+      persistSize: false, // 수정: 필터 변경 시 페이지 번호 초기화
       keepPreviousData: true, // 데이터 교체 시 이전 데이터 유지
     },
   )
