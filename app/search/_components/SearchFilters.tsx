@@ -3,7 +3,7 @@
 import { useState, useCallback, memo, useMemo } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ArrowLeft, MapPin, Calendar as CalendarIcon, X, Shapes } from 'lucide-react'
-import { format, addDays } from 'date-fns'
+import { format } from 'date-fns'
 import { ko } from 'date-fns/locale'
 
 import { Button } from '@/components/ui/button'
@@ -14,6 +14,7 @@ import { Calendar } from '@/components/ui/calendar'
 import { SEOUL_GU_LIST } from '@/features/events/constants'
 import type { EventCategory } from '@/features/events/types/event'
 import { cn } from '@/lib/cn'
+import { addDaysToDateString, getTodayInSeoulDateString } from '@/lib/utils/date'
 
 const CATEGORY_OPTIONS: { label: string; value: EventCategory }[] = [
   { label: '축제', value: 'FESTIVAL' },
@@ -27,8 +28,8 @@ export const SearchFilters = memo(function SearchFilters() {
   const searchParams = useSearchParams()
 
   // Default dates: Today ~ 7 days later
-  const defaultStart = useMemo(() => new Date(), [])
-  const defaultEnd = useMemo(() => addDays(new Date(), 7), [])
+  const defaultStart = useMemo(() => new Date(getTodayInSeoulDateString()), [])
+  const defaultEnd = useMemo(() => new Date(addDaysToDateString(getTodayInSeoulDateString(), 7)), [])
 
   // Local state initialized from URL or defaults
   const [keyword, setKeyword] = useState(searchParams.get('q') || '')

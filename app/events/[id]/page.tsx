@@ -35,7 +35,7 @@ export default async function EventDetailPage({
   const status = getEventStatus(event.startDate, event.endDate)
 
   return (
-    <div className="min-h-screen bg-white pb-24">
+    <div className="min-h-screen bg-white pb-32">
       {/* Navbar (Absolute on mobile, Sticky on desktop) */}
       <header className="fixed top-0 right-0 left-0 z-20 flex items-center justify-between p-4 sm:sticky sm:border-b sm:border-slate-100 sm:bg-white/80 sm:backdrop-blur-md">
         <BackButton fallbackUrl={backFallback} />

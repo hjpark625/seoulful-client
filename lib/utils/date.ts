@@ -1,6 +1,10 @@
-import { endOfDay, format, isAfter, isBefore, parseISO, startOfDay } from 'date-fns'
+import { addDays, format, parseISO } from 'date-fns'
 import { ko } from 'date-fns/locale'
 import type { EventStatus } from '@/features/events/types/event'
+
+const SEOUL_TIME_ZONE = 'Asia/Seoul'
+const DATE_ONLY_REGEX = /^\d{4}-\d{2}-\d{2}$/
+const HAS_TIME_ZONE_REGEX = /(Z|[+-]\d{2}:\d{2})$/
 
 export function formatDate(date: string | Date, includeTime = false): string {
   const d = typeof date === 'string' ? parseISO(date) : date
@@ -16,12 +20,65 @@ export function formatDate(date: string | Date, includeTime = false): string {
   return format(d, formatStr, { locale: ko })
 }
 
-export function getEventStatus(startDate: string | Date, endDate: string | Date, now = new Date()): EventStatus {
-  const start = startOfDay(typeof startDate === 'string' ? parseISO(startDate) : startDate)
-  const end = endOfDay(typeof endDate === 'string' ? parseISO(endDate) : endDate)
+function getTimeZoneParts(date: Date, timeZone: string) {
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  })
 
-  if (isBefore(now, start)) return 'UPCOMING'
-  if (isAfter(now, end)) return 'ENDED'
+  const parts = formatter.formatToParts(date)
+  const partMap = Object.fromEntries(parts.map((part) => [part.type, part.value]))
+
+  return {
+    year: partMap.year,
+    month: partMap.month,
+    day: partMap.day,
+    hour: partMap.hour,
+    minute: partMap.minute,
+    second: partMap.second,
+  }
+}
+
+export function getNowInSeoul(now = new Date()): Date {
+  const { year, month, day, hour, minute, second } = getTimeZoneParts(now, SEOUL_TIME_ZONE)
+  return new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}+09:00`)
+}
+
+export function getTodayInSeoulDateString(now = new Date()): string {
+  const { year, month, day } = getTimeZoneParts(now, SEOUL_TIME_ZONE)
+  return `${year}-${month}-${day}`
+}
+
+function normalizeEventDate(date: string | Date, boundary: 'start' | 'end'): Date {
+  if (date instanceof Date) return date
+
+  if (DATE_ONLY_REGEX.test(date)) {
+    const time = boundary === 'start' ? '00:00:00.000' : '23:59:59.999'
+    return new Date(`${date}T${time}+09:00`)
+  }
+
+  const normalized = date.replace(' ', 'T')
+
+  if (HAS_TIME_ZONE_REGEX.test(normalized)) {
+    return parseISO(normalized)
+  }
+
+  return new Date(`${normalized}+09:00`)
+}
+
+export function getEventStatus(startDate: string | Date, endDate: string | Date, now = new Date()): EventStatus {
+  const start = normalizeEventDate(startDate, 'start')
+  const end = normalizeEventDate(endDate, 'end')
+  const current = getNowInSeoul(now)
+
+  if (current < start) return 'UPCOMING'
+  if (current > end) return 'ENDED'
   return 'ONGOING'
 }
 
@@ -39,7 +96,7 @@ export function getEventStatusLabel(status: EventStatus): string {
 }
 
 export function getWeekendRange() {
-  const now = new Date()
+  const now = getNowInSeoul()
   const day = now.getDay() // 0(일) ~ 6(토)
 
   // 금요일 0시 계산
@@ -66,4 +123,9 @@ export function getWeekendRange() {
   sunday.setHours(23, 59, 59, 999)
 
   return { start: friday, end: sunday }
+}
+
+export function addDaysToDateString(dateString: string, amount: number): string {
+  const baseDate = normalizeEventDate(dateString, 'start')
+  return format(addDays(baseDate, amount), 'yyyy-MM-dd')
 }
