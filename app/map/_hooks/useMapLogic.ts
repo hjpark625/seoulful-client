@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useKakaoLoader } from 'react-kakao-maps-sdk'
+import { format } from 'date-fns'
 import { useEvents } from '@/features/events/hooks/useEvents'
 import { getEventDetail } from '@/features/events/service'
 import { useMapCenter, useMapZoom, useMapActions } from '@/lib/store/useMapStore'
@@ -31,6 +32,7 @@ export function useMapLogic() {
     const initialGeohash = encodeGeohash(center.lat, center.lng, 5)
     return {
       geohashes: getNeighbors(initialGeohash),
+      startDate: format(new Date(), 'yyyy-MM-dd'),
       limit: 300,
     }
   })

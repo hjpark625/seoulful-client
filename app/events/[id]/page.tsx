@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Calendar, MapPin, ExternalLink, Ticket, Users, Mic, Building2, Map as MapIcon, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { formatDate } from '@/lib/utils/date'
+import { formatDate, getEventStatus } from '@/lib/utils/date'
 import { fetchEventById } from '@/features/events/queries'
 import { EventHeroImage } from '@/features/events/components/EventHeroImage'
 import { ParkingButton } from '@/features/events/components/PartnerActionButtons'
@@ -10,6 +10,7 @@ import { CategoryBadge } from '@/features/events/components/CategoryBadge'
 import { EventInfoRow } from '@/features/events/components/EventInfoRow'
 import { BookmarkButton } from '@/features/events/components/BookmarkButton'
 import { ShareButton } from '@/features/events/components/ShareButton'
+import { EventStatusBadge } from '@/features/events/components/EventStatusBadge'
 import { BackButton } from '@/components/common/BackButton'
 
 // Force dynamic rendering since we're fetching data
@@ -32,6 +33,8 @@ export default async function EventDetailPage({
     notFound()
   }
 
+  const status = getEventStatus(event.startDate, event.endDate)
+
   return (
     <div className="min-h-screen bg-white pb-24">
       {/* Navbar (Absolute on mobile, Sticky on desktop) */}
@@ -49,19 +52,43 @@ export default async function EventDetailPage({
 
         {/* Desktop Header (Visible only on SM+) */}
         <div className="hidden px-6 pt-8 sm:block">
-          <CategoryBadge category={event.category} className="mb-3 text-sm" />
+          <div className="mb-3 flex items-center gap-2">
+            <CategoryBadge category={event.category} className="text-sm" />
+            <EventStatusBadge status={status} />
+          </div>
           <h1 className="text-3xl font-extrabold text-slate-900">{event.title}</h1>
         </div>
 
         {/* Content Body */}
         <div className="mt-6 space-y-8 px-6">
+          {status === 'ENDED' && (
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
+              <p className="text-sm font-semibold text-slate-900">종료된 행사입니다</p>
+              <p className="mt-1 text-sm text-slate-600">
+                {formatDate(event.endDate)}에 종료되었습니다. 방문 전 공식 홈페이지에서 최신 일정을 확인해주세요.
+              </p>
+            </div>
+          )}
+
+          {status === 'UPCOMING' && (
+            <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4">
+              <p className="text-sm font-semibold text-amber-900">오픈 전 행사입니다</p>
+              <p className="mt-1 text-sm text-amber-800">
+                {formatDate(event.startDate)}부터 시작됩니다. 운영 시간과 변경 사항을 방문 전에 확인해주세요.
+              </p>
+            </div>
+          )}
+
           {/* Quick Info Grid */}
           <div className="grid gap-4 rounded-2xl bg-slate-50 p-5">
             <EventInfoRow icon={Calendar} iconClassName="text-slate-500 h-5 w-5">
               <p className="font-semibold text-slate-900">일정</p>
-              <p className="text-sm text-slate-600">
-                {formatDate(event.startDate)} ~ {formatDate(event.endDate)}
-              </p>
+              <div className="space-y-1">
+                <p className="text-sm text-slate-600">
+                  {formatDate(event.startDate)} ~ {formatDate(event.endDate)}
+                </p>
+                <EventStatusBadge status={status} />
+              </div>
             </EventInfoRow>
 
             {event.displayTime && (

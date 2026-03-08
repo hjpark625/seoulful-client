@@ -1,5 +1,6 @@
-import { format, parseISO } from 'date-fns'
+import { endOfDay, format, isAfter, isBefore, parseISO, startOfDay } from 'date-fns'
 import { ko } from 'date-fns/locale'
+import type { EventStatus } from '@/features/events/types/event'
 
 export function formatDate(date: string | Date, includeTime = false): string {
   const d = typeof date === 'string' ? parseISO(date) : date
@@ -13,6 +14,28 @@ export function formatDate(date: string | Date, includeTime = false): string {
   const formatStr = includeTime ? 'yyyy-MM-dd(eee) HH:mm' : 'yyyy-MM-dd(eee)'
 
   return format(d, formatStr, { locale: ko })
+}
+
+export function getEventStatus(startDate: string | Date, endDate: string | Date, now = new Date()): EventStatus {
+  const start = startOfDay(typeof startDate === 'string' ? parseISO(startDate) : startDate)
+  const end = endOfDay(typeof endDate === 'string' ? parseISO(endDate) : endDate)
+
+  if (isBefore(now, start)) return 'UPCOMING'
+  if (isAfter(now, end)) return 'ENDED'
+  return 'ONGOING'
+}
+
+export function getEventStatusLabel(status: EventStatus): string {
+  switch (status) {
+    case 'UPCOMING':
+      return '예정'
+    case 'ONGOING':
+      return '진행 중'
+    case 'ENDED':
+      return '종료'
+    default:
+      return ''
+  }
 }
 
 export function getWeekendRange() {

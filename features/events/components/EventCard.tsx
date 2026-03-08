@@ -1,8 +1,10 @@
 import Link from 'next/link'
 import { Calendar, MapPin } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { getEventStatus } from '@/lib/utils/date'
 import { CategoryBadge } from './CategoryBadge'
 import { EventImage } from './EventImage'
+import { EventStatusBadge } from './EventStatusBadge'
 import type { SeoulEvent } from '@/features/events/types/event'
 
 interface EventCardProps {
@@ -11,6 +13,8 @@ interface EventCardProps {
 }
 
 export function EventCard({ event, className }: EventCardProps) {
+  const status = getEventStatus(event.startDate, event.endDate)
+
   return (
     <Link href={`/events/${event.id}`} className={cn('group block h-full', className)}>
       <div className="isolate flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 transition-all hover:-translate-y-1 hover:shadow-md">
@@ -23,6 +27,8 @@ export function EventCard({ event, className }: EventCardProps) {
             className="h-full w-full transition-transform duration-500 group-hover:scale-105"
           />
           <CategoryBadge category={event.category} className="absolute top-3 left-3 px-2.5 py-1 text-[10px]" />
+          <EventStatusBadge status={status} className="absolute top-3 right-3" />
+          {status === 'ENDED' && <div className="absolute inset-0 bg-slate-950/18" aria-hidden="true" />}
         </div>
 
         {/* Content Section */}

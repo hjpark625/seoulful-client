@@ -78,3 +78,4 @@ export interface EventsResponse {
 }
 
 export type EventCategory = 'FESTIVAL' | 'EXHIBITION' | 'PERFORMANCE' | 'OTHER'
+export type EventStatus = 'UPCOMING' | 'ONGOING' | 'ENDED'
