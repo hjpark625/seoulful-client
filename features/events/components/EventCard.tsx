@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Calendar, MapPin } from 'lucide-react'
 import { cn } from '@/lib/cn'
-import { getEventStatus } from '@/lib/utils/date'
+import { getEventStatus, formatDate } from '@/lib/utils/date'
 import { CategoryBadge } from './CategoryBadge'
 import { EventImage } from './EventImage'
 import { EventStatusBadge } from './EventStatusBadge'
@@ -61,7 +61,7 @@ export function EventCard({ event, className }: EventCardProps) {
             <div className="flex items-center gap-1.5">
               <Calendar className={cn('h-4 w-4 shrink-0 text-slate-400', isEnded && 'text-slate-300')} />
               <span className={isEnded ? 'text-slate-400' : ''}>
-                {new Date(event.startDate).toLocaleDateString()} ~ {new Date(event.endDate).toLocaleDateString()}
+                {formatDate(event.startDate)} ~ {formatDate(event.endDate)}
               </span>
             </div>
             <div className="flex items-center gap-1.5">
