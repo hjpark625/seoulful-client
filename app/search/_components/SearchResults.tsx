@@ -10,7 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { EventCard } from '@/features/events/components/EventCard'
 import { useEventsInfinite } from '@/features/events/hooks/useEvents'
 import type { EventCategory } from '@/features/events/types/event'
-import { format, addDays } from 'date-fns'
+import { addDaysToDateString, getTodayInSeoulDateString } from '@/lib/utils/date'
 
 const VALID_CATEGORIES: EventCategory[] = ['FESTIVAL', 'EXHIBITION', 'PERFORMANCE', 'OTHER']
 
@@ -20,11 +20,11 @@ export const SearchResults = memo(function SearchResults() {
 
   // Query events with Infinite Loading
   const filter = useMemo(() => {
-    const today = new Date()
-    const oneWeekLater = addDays(today, 7)
+    const today = getTodayInSeoulDateString()
+    const oneWeekLater = addDaysToDateString(today, 7)
 
-    const start = searchParams.get('start') || format(today, 'yyyy-MM-dd')
-    const end = searchParams.get('end') || format(oneWeekLater, 'yyyy-MM-dd')
+    const start = searchParams.get('start') || today
+    const end = searchParams.get('end') || oneWeekLater
     const categoryParam = searchParams.get('category')
     const categories = categoryParam
       ? categoryParam

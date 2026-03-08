@@ -2,14 +2,14 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Calendar, MapPin, ExternalLink, Ticket, Users, Mic, Building2, Map as MapIcon, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { formatDate } from '@/lib/utils/date'
+import { formatDate, getEventStatus } from '@/lib/utils/date'
 import { fetchEventById } from '@/features/events/queries'
 import { EventHeroImage } from '@/features/events/components/EventHeroImage'
-import { ParkingButton } from '@/features/events/components/PartnerActionButtons'
 import { CategoryBadge } from '@/features/events/components/CategoryBadge'
 import { EventInfoRow } from '@/features/events/components/EventInfoRow'
 import { BookmarkButton } from '@/features/events/components/BookmarkButton'
 import { ShareButton } from '@/features/events/components/ShareButton'
+import { EventStatusBadge } from '@/features/events/components/EventStatusBadge'
 import { BackButton } from '@/components/common/BackButton'
 
 // Force dynamic rendering since we're fetching data
@@ -32,8 +32,10 @@ export default async function EventDetailPage({
     notFound()
   }
 
+  const status = getEventStatus(event.startDate, event.endDate)
+
   return (
-    <div className="min-h-screen bg-white pb-24">
+    <div className="min-h-screen bg-white pb-32">
       {/* Navbar (Absolute on mobile, Sticky on desktop) */}
       <header className="fixed top-0 right-0 left-0 z-20 flex items-center justify-between p-4 sm:sticky sm:border-b sm:border-slate-100 sm:bg-white/80 sm:backdrop-blur-md">
         <BackButton fallbackUrl={backFallback} />
@@ -49,19 +51,43 @@ export default async function EventDetailPage({
 
         {/* Desktop Header (Visible only on SM+) */}
         <div className="hidden px-6 pt-8 sm:block">
-          <CategoryBadge category={event.category} className="mb-3 text-sm" />
+          <div className="mb-3 flex items-center gap-2">
+            <CategoryBadge category={event.category} className="text-sm" />
+            <EventStatusBadge status={status} />
+          </div>
           <h1 className="text-3xl font-extrabold text-slate-900">{event.title}</h1>
         </div>
 
         {/* Content Body */}
         <div className="mt-6 space-y-8 px-6">
+          {status === 'ENDED' && (
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
+              <p className="text-sm font-semibold text-slate-900">종료된 행사입니다</p>
+              <p className="mt-1 text-sm text-slate-600">
+                {formatDate(event.endDate)}에 종료되었습니다. 방문 전 공식 홈페이지에서 최신 일정을 확인해주세요.
+              </p>
+            </div>
+          )}
+
+          {status === 'UPCOMING' && (
+            <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4">
+              <p className="text-sm font-semibold text-amber-900">오픈 전 행사입니다</p>
+              <p className="mt-1 text-sm text-amber-800">
+                {formatDate(event.startDate)}부터 시작됩니다. 운영 시간과 변경 사항을 방문 전에 확인해주세요.
+              </p>
+            </div>
+          )}
+
           {/* Quick Info Grid */}
           <div className="grid gap-4 rounded-2xl bg-slate-50 p-5">
             <EventInfoRow icon={Calendar} iconClassName="text-slate-500 h-5 w-5">
               <p className="font-semibold text-slate-900">일정</p>
-              <p className="text-sm text-slate-600">
-                {formatDate(event.startDate)} ~ {formatDate(event.endDate)}
-              </p>
+              <div className="space-y-1">
+                <p className="text-sm text-slate-600">
+                  {formatDate(event.startDate)} ~ {formatDate(event.endDate)}
+                </p>
+                <EventStatusBadge status={status} />
+              </div>
             </EventInfoRow>
 
             {event.displayTime && (
@@ -90,6 +116,20 @@ export default async function EventDetailPage({
               </EventInfoRow>
             )}
 
+            {event.player && (
+              <EventInfoRow icon={Mic} iconClassName="text-slate-500 h-5 w-5">
+                <p className="font-semibold text-slate-900">출연</p>
+                <p className="text-sm text-slate-600">{event.player}</p>
+              </EventInfoRow>
+            )}
+
+            {event.orgName && (
+              <EventInfoRow icon={Building2} iconClassName="text-slate-500 h-5 w-5">
+                <p className="font-semibold text-slate-900">주최</p>
+                <p className="text-sm text-slate-600">{event.orgName}</p>
+              </EventInfoRow>
+            )}
+
             {event.externalLink && (
               <EventInfoRow icon={ExternalLink} iconClassName="text-slate-500 h-5 w-5">
                 <p className="font-semibold text-slate-900">공식 홈페이지</p>
@@ -104,33 +144,12 @@ export default async function EventDetailPage({
             )}
           </div>
 
-          {/* Monetization: Parking Ticket */}
-          <ParkingButton />
-
           {/* Description */}
           <div>
             <h2 className="mb-3 text-lg font-bold text-slate-900">상세 정보</h2>
             <div className="prose prose-slate max-w-none text-sm leading-relaxed whitespace-pre-wrap text-slate-600">
               {event.description || event.etcDescription || '상세 설명이 없습니다.'}
             </div>
-          </div>
-
-          {/* Additional Info */}
-          <div className="space-y-3 border-t border-slate-100 pt-6">
-            {event.player && (
-              <EventInfoRow icon={Mic} iconClassName="text-slate-400 h-5 w-5">
-                <span className="text-slate-600">
-                  <span className="font-semibold text-slate-900">출연:</span> {event.player}
-                </span>
-              </EventInfoRow>
-            )}
-            {event.orgName && (
-              <EventInfoRow icon={Building2} iconClassName="text-slate-400 h-5 w-5">
-                <span className="text-slate-600">
-                  <span className="font-semibold text-slate-900">주최:</span> {event.orgName}
-                </span>
-              </EventInfoRow>
-            )}
           </div>
         </div>
       </main>

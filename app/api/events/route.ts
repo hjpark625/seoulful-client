@@ -118,6 +118,7 @@ export async function GET(request: Request) {
     // Pagination
     const { data, error, count } = await query
       .order('start_date', { ascending: false })
+      .order('event_id', { ascending: false }) // 추가: 정렬 안정성 확보
       .range(offset, offset + limit - 1)
 
     if (error) {

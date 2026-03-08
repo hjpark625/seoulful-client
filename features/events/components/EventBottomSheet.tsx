@@ -14,11 +14,12 @@ import {
 } from '@/components/ui/drawer'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { formatDate } from '@/lib/utils/date'
+import { formatDate, getEventStatus } from '@/lib/utils/date'
 import type { SeoulEvent } from '@/features/events/types/event'
 import { EventImage } from './EventImage'
 import { CategoryBadge } from './CategoryBadge'
 import { EventInfoRow } from './EventInfoRow'
+import { EventStatusBadge } from './EventStatusBadge'
 
 interface EventBottomSheetProps {
   event: SeoulEvent | null
@@ -38,6 +39,8 @@ export function EventBottomSheet({ event, isOpen, onClose, isLoading }: EventBot
 
   // 렌더링 할 데이터가 없으면(초기 상태) 아무것도 안 그림
   if (!activeEvent && !isLoading) return null
+
+  const status = activeEvent ? getEventStatus(activeEvent.startDate, activeEvent.endDate) : null
 
   return (
     <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -60,9 +63,16 @@ export function EventBottomSheet({ event, isOpen, onClose, isLoading }: EventBot
               {/* 2. Content */}
               <div className="p-4">
                 <DrawerHeader className="p-0 text-left">
+                  <div className="mb-2">{status && <EventStatusBadge status={status} />}</div>
                   <DrawerTitle className="text-xl leading-tight font-bold">{activeEvent.title}</DrawerTitle>
                   <DrawerDescription className="sr-only">Event Details</DrawerDescription>
                 </DrawerHeader>
+
+                {status === 'ENDED' && (
+                  <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600">
+                    종료된 행사입니다. 방문 전 공식 홈페이지에서 최신 일정을 확인해주세요.
+                  </div>
+                )}
 
                 <div className="mt-4 space-y-3">
                   <EventInfoRow icon={Calendar}>

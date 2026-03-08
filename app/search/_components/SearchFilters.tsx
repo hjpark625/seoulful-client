@@ -3,7 +3,7 @@
 import { useState, useCallback, memo, useMemo } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ArrowLeft, MapPin, Calendar as CalendarIcon, X, Shapes } from 'lucide-react'
-import { format, addDays } from 'date-fns'
+import { format } from 'date-fns'
 import { ko } from 'date-fns/locale'
 
 import { Button } from '@/components/ui/button'
@@ -14,6 +14,7 @@ import { Calendar } from '@/components/ui/calendar'
 import { SEOUL_GU_LIST } from '@/features/events/constants'
 import type { EventCategory } from '@/features/events/types/event'
 import { cn } from '@/lib/cn'
+import { addDaysToDateString, getTodayInSeoulDateString } from '@/lib/utils/date'
 
 const CATEGORY_OPTIONS: { label: string; value: EventCategory }[] = [
   { label: '축제', value: 'FESTIVAL' },
@@ -27,8 +28,8 @@ export const SearchFilters = memo(function SearchFilters() {
   const searchParams = useSearchParams()
 
   // Default dates: Today ~ 7 days later
-  const defaultStart = useMemo(() => new Date(), [])
-  const defaultEnd = useMemo(() => addDays(new Date(), 7), [])
+  const defaultStart = useMemo(() => new Date(getTodayInSeoulDateString()), [])
+  const defaultEnd = useMemo(() => new Date(addDaysToDateString(getTodayInSeoulDateString(), 7)), [])
 
   // Local state initialized from URL or defaults
   const [keyword, setKeyword] = useState(searchParams.get('q') || '')
@@ -40,6 +41,9 @@ export const SearchFilters = memo(function SearchFilters() {
   const [endDate, setEndDate] = useState<Date | undefined>(
     searchParams.get('end') ? new Date(searchParams.get('end')!) : defaultEnd,
   )
+
+  const [isStartOpen, setIsStartOpen] = useState(false)
+  const [isEndOpen, setIsEndOpen] = useState(false)
 
   const handleSearch = useCallback(() => {
     const params = new URLSearchParams()
@@ -147,7 +151,7 @@ export const SearchFilters = memo(function SearchFilters() {
             <label className="ml-1 text-xs font-bold text-slate-500">기간 설정</label>
 
             <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
-              <Popover>
+              <Popover open={isStartOpen} onOpenChange={setIsStartOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -162,13 +166,22 @@ export const SearchFilters = memo(function SearchFilters() {
                 </PopoverTrigger>
 
                 <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar mode="single" selected={startDate} onSelect={setStartDate} initialFocus locale={ko} />
+                  <Calendar
+                    mode="single"
+                    selected={startDate}
+                    onSelect={(date) => {
+                      setStartDate(date)
+                      setIsStartOpen(false)
+                    }}
+                    initialFocus
+                    locale={ko}
+                  />
                 </PopoverContent>
               </Popover>
 
               <span className="text-slate-400">~</span>
 
-              <Popover>
+              <Popover open={isEndOpen} onOpenChange={setIsEndOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -186,7 +199,10 @@ export const SearchFilters = memo(function SearchFilters() {
                   <Calendar
                     mode="single"
                     selected={endDate}
-                    onSelect={setEndDate}
+                    onSelect={(date) => {
+                      setEndDate(date)
+                      setIsEndOpen(false)
+                    }}
                     locale={ko}
                     disabled={(date) => (startDate ? date < startDate : false)}
                   />

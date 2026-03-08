@@ -3,6 +3,8 @@ import { Calendar, MapPin } from 'lucide-react'
 import Image from 'next/image'
 import type { SeoulEvent } from '@/features/events/types/event'
 import { getCategoryStyle } from '@/features/events/constants'
+import { getEventStatus } from '@/lib/utils/date'
+import { EventStatusBadge } from './EventStatusBadge'
 
 interface EventListBottomSheetProps {
   isOpen: boolean
@@ -34,6 +36,7 @@ export function EventListBottomSheet({ isOpen, onClose, events, onSelectEvent }:
             <div className="space-y-3">
               {events.map((event) => {
                 const categoryStyle = getCategoryStyle(event.category)
+                const status = getEventStatus(event.startDate, event.endDate)
                 return (
                   <button
                     key={event.id}
@@ -57,6 +60,9 @@ export function EventListBottomSheet({ isOpen, onClose, events, onSelectEvent }:
 
                     <div className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
                       <div>
+                        <div className="mb-2">
+                          <EventStatusBadge status={status} />
+                        </div>
                         <h3 className="line-clamp-1 text-base font-bold text-slate-900">{event.title}</h3>
                         <div className="mt-1 flex items-center gap-1 text-xs text-slate-500">
                           <Calendar className="h-3 w-3" />
