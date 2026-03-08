@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button'
 import { formatDate, getEventStatus } from '@/lib/utils/date'
 import { fetchEventById } from '@/features/events/queries'
 import { EventHeroImage } from '@/features/events/components/EventHeroImage'
-import { ParkingButton } from '@/features/events/components/PartnerActionButtons'
 import { CategoryBadge } from '@/features/events/components/CategoryBadge'
 import { EventInfoRow } from '@/features/events/components/EventInfoRow'
 import { BookmarkButton } from '@/features/events/components/BookmarkButton'
@@ -117,6 +116,20 @@ export default async function EventDetailPage({
               </EventInfoRow>
             )}
 
+            {event.player && (
+              <EventInfoRow icon={Mic} iconClassName="text-slate-500 h-5 w-5">
+                <p className="font-semibold text-slate-900">출연</p>
+                <p className="text-sm text-slate-600">{event.player}</p>
+              </EventInfoRow>
+            )}
+
+            {event.orgName && (
+              <EventInfoRow icon={Building2} iconClassName="text-slate-500 h-5 w-5">
+                <p className="font-semibold text-slate-900">주최</p>
+                <p className="text-sm text-slate-600">{event.orgName}</p>
+              </EventInfoRow>
+            )}
+
             {event.externalLink && (
               <EventInfoRow icon={ExternalLink} iconClassName="text-slate-500 h-5 w-5">
                 <p className="font-semibold text-slate-900">공식 홈페이지</p>
@@ -131,33 +144,12 @@ export default async function EventDetailPage({
             )}
           </div>
 
-          {/* Monetization: Parking Ticket */}
-          <ParkingButton />
-
           {/* Description */}
           <div>
             <h2 className="mb-3 text-lg font-bold text-slate-900">상세 정보</h2>
             <div className="prose prose-slate max-w-none text-sm leading-relaxed whitespace-pre-wrap text-slate-600">
               {event.description || event.etcDescription || '상세 설명이 없습니다.'}
             </div>
-          </div>
-
-          {/* Additional Info */}
-          <div className="space-y-3 border-t border-slate-100 pt-6">
-            {event.player && (
-              <EventInfoRow icon={Mic} iconClassName="text-slate-400 h-5 w-5">
-                <span className="text-slate-600">
-                  <span className="font-semibold text-slate-900">출연:</span> {event.player}
-                </span>
-              </EventInfoRow>
-            )}
-            {event.orgName && (
-              <EventInfoRow icon={Building2} iconClassName="text-slate-400 h-5 w-5">
-                <span className="text-slate-600">
-                  <span className="font-semibold text-slate-900">주최:</span> {event.orgName}
-                </span>
-              </EventInfoRow>
-            )}
           </div>
         </div>
       </main>
