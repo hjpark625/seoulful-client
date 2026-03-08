@@ -42,6 +42,9 @@ export const SearchFilters = memo(function SearchFilters() {
     searchParams.get('end') ? new Date(searchParams.get('end')!) : defaultEnd,
   )
 
+  const [isStartOpen, setIsStartOpen] = useState(false)
+  const [isEndOpen, setIsEndOpen] = useState(false)
+
   const handleSearch = useCallback(() => {
     const params = new URLSearchParams()
 
@@ -148,7 +151,7 @@ export const SearchFilters = memo(function SearchFilters() {
             <label className="ml-1 text-xs font-bold text-slate-500">기간 설정</label>
 
             <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
-              <Popover>
+              <Popover open={isStartOpen} onOpenChange={setIsStartOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -163,13 +166,22 @@ export const SearchFilters = memo(function SearchFilters() {
                 </PopoverTrigger>
 
                 <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar mode="single" selected={startDate} onSelect={setStartDate} initialFocus locale={ko} />
+                  <Calendar
+                    mode="single"
+                    selected={startDate}
+                    onSelect={(date) => {
+                      setStartDate(date)
+                      setIsStartOpen(false)
+                    }}
+                    initialFocus
+                    locale={ko}
+                  />
                 </PopoverContent>
               </Popover>
 
               <span className="text-slate-400">~</span>
 
-              <Popover>
+              <Popover open={isEndOpen} onOpenChange={setIsEndOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -187,7 +199,10 @@ export const SearchFilters = memo(function SearchFilters() {
                   <Calendar
                     mode="single"
                     selected={endDate}
-                    onSelect={setEndDate}
+                    onSelect={(date) => {
+                      setEndDate(date)
+                      setIsEndOpen(false)
+                    }}
                     locale={ko}
                     disabled={(date) => (startDate ? date < startDate : false)}
                   />
