@@ -1,4 +1,5 @@
 // @/features/events/hooks/useEvents.ts
+import { useMemo } from 'react'
 import useSWR from 'swr'
 import useSWRInfinite from 'swr/infinite'
 import { getEvents } from '@/features/events/service'
@@ -54,7 +55,16 @@ export const useEventsInfinite = (filter: EventFilter) => {
     },
   )
 
-  const events = data ? data.flatMap((page) => page.events) : []
+  const events = useMemo(() => {
+    if (!data) return []
+    const allEvents = data.flatMap((page) => page.events)
+    const seen = new Set()
+    return allEvents.filter((event) => {
+      if (seen.has(event.id)) return false
+      seen.add(event.id)
+      return true
+    })
+  }, [data])
   const totalCount = data?.[0]?.totalCount || 0
   const isReachedEnd = data && data[data.length - 1]?.events.length < (filter.limit || 20)
 
