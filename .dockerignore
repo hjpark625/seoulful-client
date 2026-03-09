@@ -6,6 +6,7 @@ build
 .gitignore
 .dockerignore
 AGENTS.md
+CLAUDE.md
 README.md
 LICENSE
 .vscode
