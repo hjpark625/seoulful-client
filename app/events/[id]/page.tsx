@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Calendar, MapPin, ExternalLink, Ticket, Users, Mic, Building2, Map as MapIcon, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { formatDate, getEventStatus } from '@/lib/utils/date'
-import { fetchEventById } from '@/features/events/queries'
+import { getEventDetail } from '@/features/events/service'
 import { EventHeroImage } from '@/features/events/components/EventHeroImage'
 import { CategoryBadge } from '@/features/events/components/CategoryBadge'
 import { EventInfoRow } from '@/features/events/components/EventInfoRow'
@@ -24,7 +24,7 @@ export default async function EventDetailPage({
 }) {
   const { id } = await params
   const { from } = await searchParams
-  const event = await fetchEventById(id)
+  const event = await getEventDetail(id)
 
   const backFallback = from === 'map' ? `/map?eventId=${id}` : '/search'
 
