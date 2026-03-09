@@ -1,9 +1,7 @@
 import type { SeoulEvent, EventFilter, EventsResponse } from '@/features/events/types/event'
 
 const getBaseUrl = () => {
-  if (typeof window !== 'undefined') return ''
-  if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL
-  return 'http://localhost:3000'
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
 }
 
 export const getEvents = async (filter?: EventFilter): Promise<EventsResponse> => {
@@ -23,7 +21,10 @@ export const getEvents = async (filter?: EventFilter): Promise<EventsResponse> =
     params.append('geohashes', filter.geohashes.join(','))
   }
 
-  const res = await fetch(`${baseUrl}/api/events?${params.toString()}&t=${Date.now()}`, {
+  const query = params.toString()
+  const url = `${baseUrl}/events${query ? `?${query}&t=${Date.now()}` : `?t=${Date.now()}`}`
+
+  const res = await fetch(url, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
     cache: 'no-store', // or 'force-cache' based on requirements
@@ -39,7 +40,7 @@ export const getEvents = async (filter?: EventFilter): Promise<EventsResponse> =
 export const getEventDetail = async (eventId: string): Promise<SeoulEvent | null> => {
   try {
     const baseUrl = getBaseUrl()
-    const res = await fetch(`${baseUrl}/api/events/${eventId}`, {
+    const res = await fetch(`${baseUrl}/events/${eventId}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
       cache: 'no-store',

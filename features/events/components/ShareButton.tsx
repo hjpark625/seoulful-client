@@ -16,7 +16,7 @@ export function ShareButton({ event }: ShareButtonProps) {
       return
     }
 
-    const host = process.env.NEXT_PUBLIC_API_URL
+    const host = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
     const { id, title, description, thumbnailUrl, startDate, endDate, locationName } = event
     const period = `${formatDate(startDate)} ~ ${formatDate(endDate)}`
 

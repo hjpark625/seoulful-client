@@ -3,7 +3,7 @@ import '@/app/globals.css'
 import { KakaoScript } from '@/components/common/KakaoScript'
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
   title: {
     template: '%s | Seoulful',
     default: 'Seoulful - 서울시 축제/전시 검색 서비스',

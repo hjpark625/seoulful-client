@@ -27,7 +27,7 @@
 | **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) + [Shadcn/ui](https://ui.shadcn.com/) |
 | **State Mgt** | [SWR](https://swr.vercel.app/) (Data Fetching), React Hooks |
 | **Map SDK** | [react-kakao-maps-sdk](https://react-kakao-maps-sdk.jaewon.me/) |
-| **Backend** | [Supabase](https://supabase.com/) (PostgreSQL, RLS Enabled) |
+| **Backend** | Go API Server + [Supabase](https://supabase.com/) |
 | **Utils** | `ngeohash`, `date-fns`, `clsx`, `tailwind-merge` |
 
 ---
@@ -61,6 +61,8 @@ pnpm install
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 NEXT_PUBLIC_KAKAO_MAP_APP_KEY=your_kakao_map_api_key
+NEXT_PUBLIC_API_URL=http://localhost:8080
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 ### 4. Run Development Server
@@ -76,7 +78,6 @@ pnpm dev
 ```text
 /
 ├── app/                  # Next.js App Router
-│   ├── api/              # Backend API Routes (Event Proxy, Geohash Query)
 │   ├── map/              # 지도 기반 검색 페이지 (메인)
 │   ├── events/           # 이벤트 리스트 및 상세 페이지 ([id])
 │   └── about/            # 서비스 소개 페이지
