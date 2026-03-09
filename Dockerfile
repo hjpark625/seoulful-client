@@ -26,6 +26,8 @@ COPY . .
 # Environment variables must be present at build time
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ARG NEXT_PUBLIC_KAKAO_MAP_APP_KEY
+ENV NEXT_PUBLIC_KAKAO_MAP_APP_KEY=${NEXT_PUBLIC_KAKAO_MAP_APP_KEY}
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
 RUN pnpm build
