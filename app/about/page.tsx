@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { ValueCard } from '@/components/common/ValueCard'
 
 export const metadata = {
-  title: '서비스 소개 | Seoulful',
+  title: '서비스 소개',
   description: '서울풀이 만들어진 이유와 우리가 제공하는 가치에 대해 이야기합니다.',
 }
 
@@ -51,22 +51,22 @@ export default function AboutPage() {
           <ValueCard
             icon={<Database className="h-6 w-6 text-blue-500" />}
             title="공공데이터 100%"
-            desc="서울시가 인증한 공식 행사 데이터만을 사용하여 신뢰할 수 있는 정보를 제공합니다."
+            desc="서울시 공공데이터를 바탕으로 신뢰할 수 있는 행사 정보를 제공합니다."
           />
           <ValueCard
             icon={<Zap className="h-6 w-6 text-yellow-500" />}
-            title="이번 주말 큐레이션"
-            desc="수많은 행사 중 '지금', '내 주변에서' 즐길 수 있는 것들만 쏙쏙 골라 보여드립니다."
+            title="진행 중 행사 필터"
+            desc="수많은 정보 중 현재 진행 중이거나 곧 시작할 행사만 필터링하여 헛걸음하지 않게 도와드립니다."
           />
           <ValueCard
             icon={<Map className="h-6 w-6 text-green-500" />}
             title="지도 중심 경험"
-            desc="복잡한 목록 대신, 직관적인 지도로 내 동선에 맞는 데이트 코스를 짜보세요."
+            desc="복잡한 목록 대신, 직관적인 지도로 내 동선에 맞는 나들이 코스를 짜보세요."
           />
           <ValueCard
             icon={<Heart className="h-6 w-6 text-red-500" />}
             title="낭만적인 발견"
-            desc="유명한 핫플레이스뿐만 아니라, 당신만 알고 싶은 숨겨진 명소를 찾아드립니다."
+            desc="유명한 축제부터 동네의 작은 전시까지, 서울의 다채로운 매력을 지도를 통해 발견해보세요."
           />
         </section>
 
@@ -75,13 +75,16 @@ export default function AboutPage() {
           <div className="mb-6 flex justify-center">
             <Image src="/logo.png" alt="Seoulful Logo" width={48} height={48} className="rounded-xl shadow-sm" />
           </div>
-          <h2 className="mb-4 text-2xl font-bold text-slate-900">만든 사람들</h2>
+          <h2 className="mb-4 text-2xl font-bold text-slate-900">서울의 낭만을 더 쉽고, 더 직관적으로</h2>
           <p className="mb-6 leading-relaxed text-slate-600">
-            Seoulful은 서울을 사랑하는 1인 개발자와
+            Seoulful은 서울의 다채로운 행사 정보를 한눈에 발견하고,
             <br />
-            데이터 분석 AI가 함께 만들어가는 프로젝트입니다.
+            소중한 사람과 더 쉽게 공유할 수 있도록 만드는 서비스입니다.
             <br />
-            여러분의 피드백이 더 나은 주말을 만듭니다.
+            <br />
+            광고성 정보와 무분별한 검색 결과 사이에서 길을 잃지 않도록,
+            <br />
+            서울시 공공데이터를 바탕으로 지금 즐길 수 있는 행사 정보를 지도 위에 담았습니다.
           </p>
           <div className="flex flex-col items-center gap-3">
             <div className="flex justify-center gap-4">
@@ -97,8 +100,8 @@ export default function AboutPage() {
               </Link>
             </div>
             <p className="max-w-md text-sm leading-relaxed text-slate-500">
-              서비스 오류, 기능 제안, 데이터 제보는 GitHub에서 받고 있습니다. 개인 문의나 간단한 문의는 이메일로
-              보내주세요.
+              사용자 여러분의 피드백을 바탕으로 더 나은 탐색 경험을 계속 만들어가고 있습니다. 이용 중 불편한 점이나
+              제안하고 싶은 기능이 있다면 언제든 들려주세요. 그 목소리가 Seoulful의 다음 방향이 됩니다.
             </p>
           </div>
         </section>

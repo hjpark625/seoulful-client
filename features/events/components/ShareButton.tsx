@@ -3,6 +3,7 @@
 import { Share2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { SeoulEvent } from '@/features/events/types/event'
+import { getEventImageUrl, getEventPageUrl } from '@/features/events/utils/share'
 import { formatDate } from '@/lib/utils/date'
 
 interface ShareButtonProps {
@@ -16,27 +17,27 @@ export function ShareButton({ event }: ShareButtonProps) {
       return
     }
 
-    const host = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
     const { id, title, description, thumbnailUrl, startDate, endDate, locationName } = event
     const period = `${formatDate(startDate)} ~ ${formatDate(endDate)}`
+    const eventUrl = getEventPageUrl(id)
 
     window.Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
         title: title,
         description: `${period} | ${locationName}\n${description || ''}`.slice(0, 100),
-        imageUrl: thumbnailUrl || `${host}/logo.png`, // 기본 이미지 처리
+        imageUrl: getEventImageUrl(thumbnailUrl),
         link: {
-          mobileWebUrl: `${host}/events/${id}`,
-          webUrl: `${host}/events/${id}`,
+          mobileWebUrl: eventUrl,
+          webUrl: eventUrl,
         },
       },
       buttons: [
         {
           title: '자세히 보기',
           link: {
-            mobileWebUrl: `${host}/events/${id}`,
-            webUrl: `${host}/events/${id}`,
+            mobileWebUrl: eventUrl,
+            webUrl: eventUrl,
           },
         },
       ],
