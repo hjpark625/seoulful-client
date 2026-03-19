@@ -1,9 +1,12 @@
+import type { Metadata } from 'next'
+import { cache } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Calendar, MapPin, ExternalLink, Ticket, Users, Mic, Building2, Map as MapIcon, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { formatDate, getEventStatus } from '@/lib/utils/date'
 import { getEventDetail } from '@/features/events/service'
+import { getEventImageUrl, getEventPageUrl } from '@/features/events/utils/share'
 import { EventHeroImage } from '@/features/events/components/EventHeroImage'
 import { CategoryBadge } from '@/features/events/components/CategoryBadge'
 import { EventInfoRow } from '@/features/events/components/EventInfoRow'
@@ -14,6 +17,54 @@ import { BackButton } from '@/components/common/BackButton'
 
 // Force dynamic rendering since we're fetching data
 export const dynamic = 'force-dynamic'
+const getEventDetailCached = cache((id: string) => getEventDetail(id))
+
+const getEventDescription = (event: Awaited<ReturnType<typeof getEventDetail>>) => {
+  if (!event) return undefined
+
+  return event.description || event.etcDescription || `${event.locationName}에서 열리는 ${event.title}`
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params
+  const event = await getEventDetailCached(id)
+
+  if (!event) {
+    return { title: '행사를 찾을 수 없습니다' }
+  }
+
+  const description = getEventDescription(event)
+  const imageUrl = getEventImageUrl(event.thumbnailUrl)
+  const pageUrl = getEventPageUrl(id)
+
+  return {
+    title: event.title,
+    description,
+    alternates: {
+      canonical: `/events/${id}`,
+    },
+    openGraph: {
+      title: event.title,
+      description,
+      type: 'article',
+      url: pageUrl,
+      images: [
+        {
+          url: imageUrl,
+          width: 800,
+          height: 600,
+          alt: event.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: event.title,
+      description,
+      images: [imageUrl],
+    },
+  }
+}
 
 export default async function EventDetailPage({
   params,
@@ -24,7 +75,7 @@ export default async function EventDetailPage({
 }) {
   const { id } = await params
   const { from } = await searchParams
-  const event = await getEventDetail(id)
+  const event = await getEventDetailCached(id)
 
   const backFallback = from === 'map' ? `/map?eventId=${id}` : '/search'
 
