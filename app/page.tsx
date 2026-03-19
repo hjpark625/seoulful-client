@@ -61,18 +61,18 @@ export default function Home() {
       <div className="mt-24 grid max-w-4xl gap-6 text-left sm:mt-32 sm:grid-cols-3">
         <FeatureCard
           icon="🎉"
-          title="실시간 축제 정보"
-          desc="종료된 행사는 가라! 지금 핫한 페스티벌만 쏙쏙 골라 보여드려요."
+          title="서울 공공데이터"
+          desc="서울시 제공 공공데이터 기반으로 낚시성 정보 없이 신뢰할 수 있는 행사 정보를 보여드려요."
         />
         <FeatureCard
-          icon="💑"
-          title="데이트 코스 추천"
-          desc="성수, 홍대, 강남... 지역별 분위기 좋은 전시와 팝업스토어 큐레이션."
+          icon="📍"
+          title="지도 중심 탐색"
+          desc="리스트를 헤매지 마세요. 내 주변이나 가고 싶은 지역의 행사를 지도에서 직관적으로 찾을 수 있습니다."
         />
         <FeatureCard
-          icon="🎫"
-          title="최저가 예매 꿀팁"
-          desc="얼리버드 티켓 정보와 주변 맛집 할인 쿠폰까지 챙겨가세요."
+          icon="📱"
+          title="간편한 정보 공유"
+          desc="마음에 드는 전시나 축제를 찾으셨나요? 카카오톡 공유로 소중한 사람과 주말 약속을 바로 잡아보세요."
         />
       </div>
 
