@@ -1,4 +1,5 @@
 node_modules
+.pnpm-store
 .next
 out
 build
@@ -12,3 +13,11 @@ LICENSE
 .vscode
 .gemini
 .husky
+.env
+.env.*
+.codex
+.claude
+.tmp
+.railway
+.github
+*.tsbuildinfo
