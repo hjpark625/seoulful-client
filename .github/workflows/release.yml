@@ -32,6 +32,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.tag && format('refs/tags/{0}', inputs.tag) || github.sha }}
+          fetch-depth: 0
           persist-credentials: false
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
@@ -42,7 +43,11 @@ jobs:
       - run: pnpm lint
       - run: pnpm build
       - run: pnpm typecheck:infra
-      - run: pnpm changeset status
+      - name: Validate pending changesets
+        if: hashFiles('.changeset/*.md', '!.changeset/README.md') != ''
+        run: |
+          git branch --force main origin/main
+          pnpm changeset status
       - name: Resolve checked commit
         id: commit
         run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
