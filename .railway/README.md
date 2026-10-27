@@ -68,3 +68,6 @@ pnpm railway:apply --environment production
 
 Railway CLI와 TypeScript SDK는 devDependencies의 버전으로 고정합니다.
 `railway:plan` / `railway:apply`는 CLI에 포함된 IaC 엔진을 사용합니다.
+
+GitHub Actions 자체의 JavaScript 실행 런타임도 Node 24를 사용하는 버전으로 고정합니다.
+앱의 빌드·검증에 사용하는 Node 버전은 `.nvmrc`의 24.22.1로 지정합니다.
