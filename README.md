@@ -163,3 +163,13 @@ Seoulful은 문의 성격에 따라 GitHub Issues와 이메일을 함께 운영�
 ## 📝 License
 
 Distributed under the MIT License. See `LICENSE` for more information.
+
+## 배포와 릴리스
+
+변경 PR에 `pnpm changeset`으로 버전 증가 폭과 변경 설명을 추가합니다.
+main 병합 시 Changesets가 버전과 CHANGELOG를 갱신하는 릴리스 PR을 생성하고,
+그 릴리스 PR을 병합하면 `vX.Y.Z` 태그·GitHub Release 생성과 Railway 배포가 자동 실행됩니다.
+
+배포 설정은 [Railway IaC](.railway/railway.ts)로 관리하며,
+GitHub Deployments와 Release 첨부 파일에서 배포 결과와 커밋을 추적합니다.
+최초 연결, 환경 변수, 롤백 절차는 [배포 가이드](.railway/README.md)를 참고하세요.

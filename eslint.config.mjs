@@ -5,9 +5,9 @@ import prettierConfig from 'eslint-config-prettier'
 import prettierPlugin from 'eslint-plugin-prettier'
 import js from '@eslint/js'
 import globals from 'globals'
-import tseslint from 'typescript-eslint'
 
 const eslintConfig = defineConfig([
+  js.configs.recommended,
   ...nextVitals,
   ...nextTs,
   // Override default ignores of eslint-config-next.
@@ -19,7 +19,7 @@ const eslintConfig = defineConfig([
     'next-env.d.ts',
   ]),
   {
-    extends: [js.configs.recommended, prettierConfig, tseslint.configs.recommended],
+    extends: [prettierConfig],
     plugins: {
       prettier: prettierPlugin,
     },
@@ -30,7 +30,6 @@ const eslintConfig = defineConfig([
         ...globals.browser,
         ...globals.node,
       },
-      parser: tseslint.parser,
     },
     rules: {
       'prettier/prettier': 'warn',
